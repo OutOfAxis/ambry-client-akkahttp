@@ -1,10 +1,8 @@
 package io.pixelart.ambry.client.infrastructure.adapter
 
-import akka.util.ByteString
 import com.softwaremill.tagging.@@
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.config.{Endpoint, ActorImplicits}
-import akka.http.scaladsl.model.ContentType
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import io.pixelart.ambry.client.domain.model.AmbryId
@@ -14,6 +12,17 @@ import io.pixelart.ambry.client.domain.model.AmbryId
   */
 trait AmbryHttpRequests  extends StrictLogging with ActorImplicits {
 
+/**
+  * GET /healthCheck
+  *
+  * Can be used to check the status of the frontend.
+  * Status here refers to the frontend's ability to answer requests.
+  *
+  * A successful response will be returned with a status code of 200 OK
+  * and the body of the response will contain the status of frontend - GOOD/BAD.
+  *
+  * */
+def healthCheck(url: String @@ Endpoint)
 
   /**
     * POST /
@@ -44,11 +53,14 @@ trait AmbryHttpRequests  extends StrictLogging with ActorImplicits {
 
 
   /**
-   * GET /<ambry-id>/UserMetadata
-   *
-   *
-   * returns: The user metadata as response headers.
-   * */
+    * GET /<ambry-id>/
+    *
+    *  Supports the "If-Modified-Since" header and
+    *  returns 304 Not_Modified if the blob has not been modified since the time specified
+    *
+    *
+    *
+    * */
   def getUserMetadata(url: String @@ Endpoint, data: Source[ByteString, Any])
 
   /**
