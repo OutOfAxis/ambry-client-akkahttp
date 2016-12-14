@@ -7,7 +7,7 @@ import io.outofaxis.pixelart.cms.router.domain.model.XMPHttpToken
 import scala.util.Try
 
 
-trait XMPHttpRequests extends HttpRequests {
+trait XMPAkkaHttpAmbryRequests extends AkkaHttpAmbryRequests {
 
 
 

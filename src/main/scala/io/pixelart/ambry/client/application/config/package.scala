@@ -4,13 +4,22 @@ package object config {
 
   trait GlobalConfig
 
-  trait AmbryId
+//  trait AmbryId
 
   trait FilePath
 
-  trait Hostname
+  trait AmbryHostname
 
-  trait Endpoint
+  trait AmbryUri
 
-  trait Port
+  trait AmbryPort
+
+  trait AmbryBlobSize
+
+  trait AmbryServiceId
+
+  trait AmbryTtl
+
+  trait AmbryOwnerId
+
 }
