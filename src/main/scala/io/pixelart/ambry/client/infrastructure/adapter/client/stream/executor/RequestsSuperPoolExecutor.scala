@@ -5,6 +5,7 @@ import akka.http.scaladsl.model.{ HttpRequest, HttpResponse }
 import akka.stream.StreamTcpException
 import akka.stream.scaladsl.{ Keep, Sink, Source }
 import io.pixelart.ambry.client.application.config.ActorImplicits
+import io.pixelart.ambry.client.domain.model.AmbryHttpConnectionException
 import io.pixelart.ambry.client.infrastructure.adapter.client.AmbryHttpClientResponseHandler
 
 import scala.concurrent.Future
@@ -25,7 +26,7 @@ trait RequestsSuperPoolExecutor extends RequestsExecutor with AmbryHttpClientRes
       .toMat(Sink.head)(Keep.right).run()
       .recoverWith {
         case e: StreamTcpException => {
-          throw new XMPHttpConnectionException(e.getMessage, nestedException = e)
+          throw new AmbryHttpConnectionException(e.getMessage, nestedException = e)
         }
       }
 }

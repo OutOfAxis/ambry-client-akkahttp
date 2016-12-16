@@ -3,12 +3,8 @@ package io.pixelart.ambry.client.domain.model
 import java.util.NoSuchElementException
 
 import akka.http.scaladsl.model.ContentType
-
-¡
-
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import com.github.nscala_time.time.Imports._
 import com.softwaremill.tagging._
 import io.pixelart.ambry.client.application.config.{AmbryTtl, AmbryServiceId, AmbryBlobSize}
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._

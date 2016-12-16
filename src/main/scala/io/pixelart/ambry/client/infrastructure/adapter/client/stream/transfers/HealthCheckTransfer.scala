@@ -14,8 +14,8 @@ object HealthCheckTransfer {
 
 trait HealthCheckTransfer extends AmbryHttpClientResponseHandler {
   self: Execution =>
-  //  import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport._
-  //  import io.outofaxis.pixelart.cms.router.infrastructure.player.xmp.translator.XMPPlayerFormatter._
+
+  import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
   def flowAuthenticate: Flow[HealthCheckRequestData, AmbryHealthStatusResponse, NotUsed] =
     Flow[HealthCheckRequestData].mapAsync(1) { data =>

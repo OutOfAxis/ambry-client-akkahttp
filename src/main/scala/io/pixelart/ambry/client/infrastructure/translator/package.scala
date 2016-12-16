@@ -1,6 +1,6 @@
 package io.pixelart.ambry.client.infrastructure.translator
 
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.{StatusCodes, HttpResponse}
 import akka.http.scaladsl.model.headers.Location
 import akka.http.scaladsl.unmarshalling._
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
@@ -42,8 +42,15 @@ package object AmbryResponseUnmarshallers {
 
       Unmarshaller.strict(unmarshal)
     }
-
   }
 
+  implicit final val fromDeleteResponse: FromResponseUnmarshaller[Boolean] = {
+    def unmarshal: PartialFunction[HttpResponse, Boolean] = {
+      case HttpResponse(StatusCodes.Accepted, _, _, _) => true
+      case _ => false
+    }
+
+    Unmarshaller.strict(unmarshal)
+  }
 
 }

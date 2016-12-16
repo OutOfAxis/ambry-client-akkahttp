@@ -21,9 +21,7 @@ class AmbryClient(hostname: String @@ AmbryHostname, port: String @@ AmbryPort =
    * Check the status of the frontend
    * @return the response which contains code and status
    */
-  def healthCheck: Future[AmbryBaseResponse] = {
-
-  }
+  def healthCheck: Future[AmbryHealthStatusResponse] = ???
 
   /**
    * Get the file properties represented by the ambryId
@@ -37,7 +35,7 @@ class AmbryClient(hostname: String @@ AmbryHostname, port: String @@ AmbryPort =
    * @param ambryId the file's ambryId
    * @return file's user metadata of the given resource id
    */
-  def getFileUserMetadata(ambryId: AmbryId): AmbryUMResponse = ???
+//  def getFileUserMetadata(ambryId: AmbryId): AmbryUMResponse = ???
 
   /**
    * Get the file with the given resource id
@@ -84,6 +82,6 @@ class AmbryClient(hostname: String @@ AmbryHostname, port: String @@ AmbryPort =
    * @param ambryId resource id of the target file
    * @return remove status
    */
-  def deleteFile(ambryId: AmbryId): AmbryBaseResponse = ???
+  def deleteFile(ambryId: AmbryId): Future[Boolean] = ???
 
 }
