@@ -5,10 +5,11 @@ import akka.http.scaladsl.model.{ HttpRequest, HttpResponse }
 import akka.stream.StreamTcpException
 import akka.stream.scaladsl.{ Keep, Sink, Source }
 import io.pixelart.ambry.client.application.config.ActorImplicits
+import io.pixelart.ambry.client.infrastructure.adapter.client.AmbryHttpClientResponseHandler
 
 import scala.concurrent.Future
 
-trait RequestsSuperPoolExecutor extends RequestsExecutor with XMPHttpClientResponseHandler with ActorImplicits {
+trait RequestsSuperPoolExecutor extends RequestsExecutor with AmbryHttpClientResponseHandler with ActorImplicits {
 
   private lazy val poolFlow = Http()(actorSystem).superPool[Unit]()(materializer)
 

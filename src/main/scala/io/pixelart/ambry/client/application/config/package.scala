@@ -4,13 +4,11 @@ package object config {
 
   trait GlobalConfig
 
-//  trait AmbryId
+  //  trait AmbryId
 
   trait FilePath
 
   trait AmbryHostname
-
-  trait AmbryUri
 
   trait AmbryPort
 
@@ -19,7 +17,5 @@ package object config {
   trait AmbryServiceId
 
   trait AmbryTtl
-
-  trait AmbryOwnerId
 
 }

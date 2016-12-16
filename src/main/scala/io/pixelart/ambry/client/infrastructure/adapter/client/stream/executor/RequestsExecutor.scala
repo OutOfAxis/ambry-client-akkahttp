@@ -8,5 +8,4 @@ trait RequestsExecutor {
 
   protected[stream] def executeRequest[T](httpReq: HttpRequest, unmarshalFunc: HttpResponse => Future[T]): Future[T]
 
-
 }
