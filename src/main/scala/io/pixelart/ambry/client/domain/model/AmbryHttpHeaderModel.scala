@@ -1,8 +1,8 @@
 package io.pixelart.ambry.client.domain.model
 
-import akka.http.scaladsl.model.headers.{ ModeledCustomHeader, ModeledCustomHeaderCompanion }
+import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeaderCompanion}
 import com.softwaremill.tagging._
-import io.pixelart.ambry.client.application.config.{ AmbryBlobSize, AmbryServiceId, AmbryTtl }
+import io.pixelart.ambry.client.application.config.AmbryBlobSize
 
 import scala.util.Try
 
@@ -39,24 +39,23 @@ object AmbryHttpHeaderModel {
    *
    * The ID of the service that is uploading the blob
    */
-  final case class AmbryServiceIdHeader(id: String @@ AmbryServiceId) extends ModeledCustomHeader[AmbryServiceIdHeader] {
+  final case class AmbryServiceIdHeader(id: AmbryServiceId) extends ModeledCustomHeader[AmbryServiceIdHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
 
     override val companion = AmbryServiceIdHeader
 
-    override def value: String = id
+    override def value: String = id.value
   }
 
   object AmbryServiceIdHeader extends ModeledCustomHeaderCompanion[AmbryServiceIdHeader] {
     override val name = "x-ambry-service-id"
 
-    override def parse(value: String) = Try(new AmbryServiceIdHeader(value.taggedWith[AmbryServiceId]))
+    override def parse(value: String) = Try(new AmbryServiceIdHeader(AmbryServiceId(value)))
   }
 
-
-  final case class AmbryCreationTimeHeader(time: String ) extends ModeledCustomHeader[AmbryCreationTimeHeader] {
+  final case class AmbryCreationTimeHeader(time: String) extends ModeledCustomHeader[AmbryCreationTimeHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -71,8 +70,6 @@ object AmbryHttpHeaderModel {
 
     override def parse(value: String) = Try(new AmbryCreationTimeHeader(value.taggedWith[AmbryServiceId]))
   }
-
-
 
   /**
    * header:

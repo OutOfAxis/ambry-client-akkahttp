@@ -5,7 +5,7 @@ import akka.stream.ActorMaterializer
 import io.pixelart.ambry.client.application.config.ActorImplicits
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryHttpRequests
 import io.pixelart.ambry.client.infrastructure.adapter.client.stream.executor.RequestsExecutor
-import io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers.UploadBloabTransfer
+import io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers.UploadBlobTransfer
 import scala.concurrent.ExecutionContext
 
 trait Execution extends ActorImplicits {
@@ -26,6 +26,6 @@ object XMPFlowHttpClient {
 }
 
 trait XMPFlowHttpClient
-    extends UploadBloabTransfer
+    extends UploadBlobTransfer
     with Execution {
 }

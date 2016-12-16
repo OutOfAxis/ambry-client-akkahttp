@@ -34,7 +34,7 @@ trait AbstractAmbryClient {
    * @param ambryId the file's ambryId
    * @return the file object
    */
-  def getFile(ambryId: AmbryId): AmbryGetFileResponse
+  def getFile(ambryId: AmbryId): AmbryGetBlobResponse
 
   /**
    * Get the file with given resource id, and put into the local file object.
@@ -42,7 +42,7 @@ trait AbstractAmbryClient {
    * @param localFile save the download file as local
    * @return the file object and result
    */
-  def getFile(ambryId: String, localFile: File): AmbryGetFileResponse
+  def getFile(ambryId: String, localFile: File): AmbryGetBlobResponse
 
   /**
    * Upload a file with the file's path.

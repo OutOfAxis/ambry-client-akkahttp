@@ -17,7 +17,7 @@ trait HealthCheckTransfer extends AmbryHttpClientResponseHandler {
 
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
-  def flowAuthenticate: Flow[HealthCheckRequestData, AmbryHealthStatusResponse, NotUsed] =
+  def flowHealthCheck: Flow[HealthCheckRequestData, AmbryHealthStatusResponse, NotUsed] =
     Flow[HealthCheckRequestData].mapAsync(1) { data =>
       val httpReq = httpRequests.healthStatusHttpRequest(data.ambryUri)
       val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryHealthStatusResponse]
