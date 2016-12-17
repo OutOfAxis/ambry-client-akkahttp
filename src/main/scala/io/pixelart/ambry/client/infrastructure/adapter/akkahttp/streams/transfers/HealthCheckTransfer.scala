@@ -1,18 +1,18 @@
-package io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers
+package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers
 
 import akka.NotUsed
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
-import io.pixelart.ambry.client.domain.model.{ AmbryHealthStatusResponse, AmbryUri }
-import io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers.HealthCheckTransfer.HealthCheckRequestData
-import io.pixelart.ambry.client.infrastructure.adapter.client.{ AmbryHttpClientResponseHandler, Execution }
+import io.pixelart.ambry.client.domain.model.{AmbryHealthStatusResponse, AmbryUri}
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.HealthCheckTransfer.HealthCheckRequestData
 
 object HealthCheckTransfer {
   case class HealthCheckRequestData(ambryUri: AmbryUri)
 }
 
-trait HealthCheckTransfer extends AmbryHttpClientResponseHandler {
+trait HealthCheckTransfer extends AkkaHttpAmbryResponseHandler {
   self: Execution =>
 
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._

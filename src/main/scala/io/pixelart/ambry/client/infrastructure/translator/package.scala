@@ -25,7 +25,7 @@ package object AmbryResponseUnmarshallers {
     Unmarshaller.strict(unmarshal)
   }
 
-  implicit final val fromUploadResponse: FromResponseUnmarshaller[AmbryBlobFileResponse] = {
+  implicit final val fromUploadResponse: FromResponseUnmarshaller[AmbryBlobUploadResponse] = {
 
     def unmarshal(response: HttpResponse) = {
 
@@ -35,7 +35,7 @@ package object AmbryResponseUnmarshallers {
         .headOption
         .getOrElse(throw new NoSuchElementException("header not found: Location"))
 
-      AmbryBlobFileResponse(AmbryId(locheader.uri.toString))
+      AmbryBlobUploadResponse(AmbryId(locheader.uri.toString))
     }
     Unmarshaller.strict(unmarshal)
   }
@@ -99,6 +99,8 @@ package object AmbryResponseUnmarshallers {
         .headers
         .collect { case h: AmbryTtlHeader => h }
         .headOption
+        .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryTtlHeader.name}"))
+
 
       val ownerIdHeader = response
         .headers
@@ -111,7 +113,7 @@ package object AmbryResponseUnmarshallers {
         creationTimeHeader.date,
         privateHeader.prvt,
         contentTypeHeader.contentType,
-        ttlHeader.map(_.ttl),
+        ttlHeader.ttl,
         ownerIdHeader.map(_.ownerId)
       )
     }

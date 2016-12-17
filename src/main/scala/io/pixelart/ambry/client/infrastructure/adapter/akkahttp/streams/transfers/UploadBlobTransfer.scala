@@ -1,20 +1,18 @@
-package io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers
+package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers
 
 import akka.NotUsed
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
-import io.pixelart.ambry.client.domain.model.{ AmbryPostFileResponse, UploadBlobRequestData, AmbryUri }
-import io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers.UploadBlobTransfer.{ UploadBloabRequestData }
-import io.pixelart.ambry.client.infrastructure.adapter.client.{ AmbryHttpClientResponseHandler, Execution }
+import io.pixelart.ambry.client.domain.model.{AmbryUri, UploadBlobRequestData}
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.UploadBlobTransfer.UploadBloabRequestData
 
 object UploadBlobTransfer {
   case class UploadBloabRequestData(ambryUri: AmbryUri, uploadData: UploadBlobRequestData)
 }
-trait UploadBlobTransfer extends AmbryHttpClientResponseHandler {
+trait UploadBlobTransfer extends AkkaHttpAmbryResponseHandler {
   self: Execution =>
-
-  import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
   def flowUpload: Flow[UploadBloabRequestData, AmbryPostFileResponse, NotUsed] =
     Flow[UploadBloabRequestData].mapAsync(1) { data =>

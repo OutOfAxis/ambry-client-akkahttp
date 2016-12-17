@@ -1,20 +1,15 @@
-package io.pixelart.ambry.client.infrastructure.adapter
+package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
 import akka.http.scaladsl.model._
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
-import com.softwaremill.tagging._
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.config._
+import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
-import AmbryHttpHeaderModel._
-
-import scala.collection.parallel.immutable
 
 /**
- * Created by rabzu on 11/12/2016.
- */
-trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits with AmbryHttpRequests {
+  * Created by rabzu on 11/12/2016.
+  */
+trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits {
 
   private val healthCheckAddress = "healthCheck"
 
@@ -25,11 +20,20 @@ trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits with Ambry
   //todo: 2. make non required header fields Optional
   def uploadBlobHttpRequest(ambryUri: AmbryUri, uploadBlobData: UploadBlobRequestData): HttpRequest = {
 
+    val sizeHeader =  AmbryBlobSizeHeader(uploadBlobData.size)
+    val serviceIdHeader = AmbryServiceIdHeader(uploadBlobData.serviceId)
+    val contentTypeHeader =  AmbryContentTypeHeader(uploadBlobData.contentType.mediaType.toString)
+    val ttlHeader = AmbryTtlHeader(uploadBlobData.ttl)
+    val privateHeader = AmbryPrivateHeader(uploadBlobData.prvt)
+    val ownerIdHeader =  AmbryOwnerIdHeader(uploadBlobData.ownerId)
+
+    val headers = List(sizeHeader, serviceIdHeader, contentTypeHeader, ttlHeader, privateHeader, ownerIdHeader)
+
     HttpRequest(
       uri = s"${ambryUri.uri}/",
-      headers = uploadBlobData.getHeaderList,
+      headers = headers,
       method = HttpMethods.POST,
-      entity = HttpEntity.Default(uploadBlobData.contentType, uploadBlobData.size, uploadBlobData.blobSource.data)
+      entity = HttpEntity.Default(uploadBlobData.contentType, uploadBlobData.size, uploadBlobData.blobSource)
     )
   }
 
@@ -46,6 +50,7 @@ trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits with Ambry
   //todo: complete: data format is not specidied in the Ambry docs
   //def modifiedSinceReuqest(ambryUri: AmbryUri, date: Date)
 
+  //todo: not impleneted in the client side
   def getBlobPropertiesHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"$ambryUri/${ambryId.value}", method = HttpMethods.GET)
 

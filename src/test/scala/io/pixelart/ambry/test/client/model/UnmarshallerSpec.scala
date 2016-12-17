@@ -19,11 +19,8 @@ import com.github.nscala_time.time.Imports.DateTime
   */
 class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with WordSpecLike with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
-  import akka.http.scaladsl.unmarshalling._
 
-  import akka.http.scaladsl.unmarshalling._
 
-  import Unmarhsallers._
   import akka.http.scaladsl.unmarshalling._
 
   /** Mock Response data */
@@ -32,7 +29,7 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Word
   val healthCheck = AmbryHealthStatusResponse(Good)
 
   //2.posted blob Response data
-  val ambryBlobInfo = AmbryBlobFileResponse(AmbryId("ambryId"))
+  val ambryBlobInfo = AmbryBlobUploadResponse(AmbryId("ambryId"))
 
   //3.get blob info response data
   val nowMillis = DateTime.now
@@ -41,7 +38,7 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Word
   val creationTimeHeader = AmbryCreationTimeHeader(nowMillis)
   val privateHeader = AmbryPrivateHeader(false)
   val contentTypeHeader = AmbryContentTypeHeader("image/png")
-  val ttlHeader = AmbryTtlHeader(nowMillis)
+  val ttlHeader = AmbryTtlHeader((nowMillis.getMillis * 0.001).toLong)
   val ownerIdHeader = AmbryOwnerIdHeader("onwerId")
 
   val getBlobInfoResponse = AmbryBlobInfoResponse(
@@ -50,7 +47,7 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Word
     creationTimeHeader.date,
     privateHeader.prvt,
     contentTypeHeader.contentType,
-    Some(nowMillis),
+    -1,
     Some(ownerIdHeader.ownerId)
   )
 
@@ -106,7 +103,7 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Word
       }
     }
     "2. unmarshal PostFile HttpResponse to AmbryPostFileResponse" in {
-      val result = Unmarshal(postFileHttpResponse).to[AmbryBlobFileResponse]
+      val result = Unmarshal(postFileHttpResponse).to[AmbryBlobUploadResponse]
       whenReady(result, timeout(10 seconds)) { r =>
         r shouldEqual ambryBlobInfo
       }

@@ -1,23 +1,23 @@
-package io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers
+package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers
 
 import akka.NotUsed
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
 import io.pixelart.ambry.client.domain.model._
-import io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers.GetBlobTransfer.GetBlobTransferRequestData
-import io.pixelart.ambry.client.infrastructure.adapter.client.{ AmbryHttpClientResponseHandler, Execution }
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.GetBlobTransfer.GetBlobTransferRequestData
 
 object GetBlobTransfer {
   case class GetBlobTransferRequestData(ambryUri: AmbryUri, ambryId: AmbryId)
 }
 
-trait GetBlobTransferTransfer extends AmbryHttpClientResponseHandler {
+trait GetBlobTransfer extends AkkaHttpAmbryResponseHandler {
   self: Execution =>
 
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
-  def flowDelete: Flow[GetBlobTransferRequestData, AmbryGetBlobResponse, NotUsed] =
+  def flowGetBlob: Flow[GetBlobTransferRequestData, AmbryGetBlobResponse, NotUsed] =
     Flow[GetBlobTransferRequestData].mapAsync(1) { data =>
       val httpReq = httpRequests.getBlobHttpRequest(data.ambryUri, data.ambryId)
 

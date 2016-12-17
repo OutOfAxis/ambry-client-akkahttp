@@ -1,12 +1,12 @@
-package io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers
+package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers
 
 import akka.NotUsed
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
 import io.pixelart.ambry.client.domain.model._
-import io.pixelart.ambry.client.infrastructure.adapter.client.stream.transfers.GetBlobInfoTransfer.GetBlobInfoRequestData
-import io.pixelart.ambry.client.infrastructure.adapter.client.{AmbryHttpClientResponseHandler, Execution}
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.GetBlobInfoTransfer.GetBlobInfoRequestData
 
 object GetBlobInfoTransfer {
 
@@ -14,7 +14,7 @@ object GetBlobInfoTransfer {
 
 }
 
-trait GetBlobInfoTransfer extends AmbryHttpClientResponseHandler {
+trait GetBlobInfoTransfer extends AkkaHttpAmbryResponseHandler {
   self: Execution =>
 
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._

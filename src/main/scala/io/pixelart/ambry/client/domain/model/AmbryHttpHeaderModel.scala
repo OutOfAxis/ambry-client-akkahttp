@@ -101,7 +101,7 @@ object AmbryHttpHeaderModel {
    *
    * The time in seconds for which the blob is valid. Defaults to -1 (infinite validity)
    */
-  final case class AmbryTtlHeader(ttl: DateTime) extends ModeledCustomHeader[AmbryTtlHeader] {
+  final case class AmbryTtlHeader(ttl: Long) extends ModeledCustomHeader[AmbryTtlHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -114,7 +114,7 @@ object AmbryHttpHeaderModel {
   object AmbryTtlHeader extends ModeledCustomHeaderCompanion[AmbryTtlHeader] {
     override val name = "x-ambry-ttl"
 
-    override def parse(value: String) = Try(AmbryTtlHeader(new DateTime(value.toLong)))
+    override def parse(value: String) = Try(AmbryTtlHeader(value.toLong))
   }
 
   /**

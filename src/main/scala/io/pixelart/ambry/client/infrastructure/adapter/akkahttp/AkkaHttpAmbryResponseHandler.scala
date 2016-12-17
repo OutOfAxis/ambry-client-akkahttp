@@ -1,13 +1,14 @@
-package io.pixelart.ambry.client.infrastructure.adapter.client
+package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
-import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import io.pixelart.ambry.client.domain.model.{AmbryHttpAuthorisationException, AmbryHttpBadRequestException}
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success, Try }
 
-trait AmbryHttpClientResponseHandler {
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
+
+trait AkkaHttpAmbryResponseHandler {
 
   protected def handleHttpResponse[T](httpResponse: HttpResponse, unmarshal: HttpResponse => Future[T])(implicit ec: ExecutionContext, mat: ActorMaterializer): Future[T] = {
     httpResponse match {
