@@ -2,11 +2,10 @@ package io.pixelart.ambry.client.domain.model
 
 import java.util.NoSuchElementException
 
-import akka.http.scaladsl.model.{ContentType, DateTime}
+import akka.http.scaladsl.model.ContentType
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import com.softwaremill.tagging._
-import io.pixelart.ambry.client.application.config.{AmbryBlobSize, AmbryTtl}
+import com.github.nscala_time.time.Imports.DateTime
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 
 /**
@@ -29,10 +28,10 @@ case class AmbryUri(uri: String)
 //todo: 2. make non required header fields Optional
 final case class UploadBlobRequestData(
     blobSource: Source[ByteString, Any],
-    size: Long @@ AmbryBlobSize,
+    size: Long,
     serviceId: AmbryServiceId,
     contentType: ContentType,
-    ttl: Long @@ AmbryTtl,
+    ttl: DateTime,
     prvt: Boolean = false,
     ownerId: AmbryOwnerId
 ) extends AmbryHttpRequestModel {
@@ -64,14 +63,15 @@ object Bad extends HealthStatus
 
 case class AmbryHealthStatusResponse(status: HealthStatus) extends AmbryHttpResponseModel
 
+//todo: Add User Metadata fields
 case class AmbryBlobInfoResponse(
   blobSize: Long,
   serviceId: AmbryServiceId,
-  //  creationTime: DateTime,
-  creationTime: String,
+  creationTime: DateTime,
   isPrivate: Boolean,
-  contentType: String,
-  ownerId: AmbryOwnerId
+  ambryContentType: String,
+  ttl: Option[DateTime],
+  ownerId: Option[AmbryOwnerId]
 ) extends AmbryHttpResponseModel
 
 case class AmbryGetBlobResponse(
@@ -84,7 +84,7 @@ case class AmbryGetBlobResponse(
 /**
  * The resource id returned after save on Ambry.
  */
-case class AmbryPostFileResponse(ambryId: AmbryId) extends AmbryHttpResponseModel
+case class AmbryBlobFileResponse(ambryId: AmbryId) extends AmbryHttpResponseModel
 
 //case class AmbryUMResponse(umDesc: String)
 

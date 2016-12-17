@@ -1,8 +1,7 @@
 package io.pixelart.ambry.client.domain.model
 
 import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeaderCompanion}
-import com.softwaremill.tagging._
-import io.pixelart.ambry.client.application.config.AmbryBlobSize
+import com.github.nscala_time.time.Imports.DateTime
 
 import scala.util.Try
 
@@ -17,7 +16,7 @@ object AmbryHttpHeaderModel {
    *
    * The size of the blob being uploaded
    */
-  final case class AmbryBlobSizeHeader(size: Long @@ AmbryBlobSize) extends ModeledCustomHeader[AmbryBlobSizeHeader] {
+  final case class AmbryBlobSizeHeader(size: Long) extends ModeledCustomHeader[AmbryBlobSizeHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -30,7 +29,7 @@ object AmbryHttpHeaderModel {
   object AmbryBlobSizeHeader extends ModeledCustomHeaderCompanion[AmbryBlobSizeHeader] {
     override val name = "x-ambry-blob-size"
 
-    override def parse(value: String) = Try(new AmbryBlobSizeHeader(value.toLong.taggedWith[AmbryBlobSize]))
+    override def parse(value: String) = Try(new AmbryBlobSizeHeader(value.toLong))
   }
 
   /**
@@ -52,23 +51,23 @@ object AmbryHttpHeaderModel {
   object AmbryServiceIdHeader extends ModeledCustomHeaderCompanion[AmbryServiceIdHeader] {
     override val name = "x-ambry-service-id"
 
-    override def parse(value: String) = Try(new AmbryServiceIdHeader(AmbryServiceId(value)))
+    override def parse(value: String) = Try(AmbryServiceIdHeader(AmbryServiceId(value)))
   }
 
-  final case class AmbryCreationTimeHeader(time: String) extends ModeledCustomHeader[AmbryCreationTimeHeader] {
+  final case class AmbryCreationTimeHeader(date: DateTime) extends ModeledCustomHeader[AmbryCreationTimeHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
 
     override val companion = AmbryCreationTimeHeader
 
-    override def value: String = time
+    override def value: String = date.getMillis.toString
   }
 
   object AmbryCreationTimeHeader extends ModeledCustomHeaderCompanion[AmbryCreationTimeHeader] {
     override val name = "x-ambry-creation-time"
 
-    override def parse(value: String) = Try(new AmbryCreationTimeHeader(value.taggedWith[AmbryServiceId]))
+    override def parse(value: String) = Try(AmbryCreationTimeHeader(new DateTime(value.toLong)))
   }
 
   /**
@@ -98,11 +97,11 @@ object AmbryHttpHeaderModel {
 
   /**
    * header:
-   * "x-ambry-ttl": Long
+   * "x-ambry-ttl": DatTime
    *
    * The time in seconds for which the blob is valid. Defaults to -1 (infinite validity)
    */
-  final case class AmbryTtlHeader(ttl: Long @@ AmbryTtl) extends ModeledCustomHeader[AmbryTtlHeader] {
+  final case class AmbryTtlHeader(ttl: DateTime) extends ModeledCustomHeader[AmbryTtlHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -115,7 +114,7 @@ object AmbryHttpHeaderModel {
   object AmbryTtlHeader extends ModeledCustomHeaderCompanion[AmbryTtlHeader] {
     override val name = "x-ambry-ttl"
 
-    override def parse(value: String) = Try(new AmbryTtlHeader(value.toLong.taggedWith[AmbryTtl]))
+    override def parse(value: String) = Try(AmbryTtlHeader(new DateTime(value.toLong)))
   }
 
   /**
@@ -193,20 +192,20 @@ object AmbryHttpHeaderModel {
    *
    * The owner of the blob.
    */
-  final case class AmbryFailureIdHeader(failure: String) extends ModeledCustomHeader[AmbryFailureIdHeader] {
+  final case class AmbryFailureIdHeader(failure: Boolean) extends ModeledCustomHeader[AmbryFailureIdHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
 
     override val companion = AmbryFailureIdHeader
 
-    override def value: String = failure
+    override def value: String = failure.toString
   }
 
   object AmbryFailureIdHeader extends ModeledCustomHeaderCompanion[AmbryFailureIdHeader] {
     override val name = "x-ambry-failure-reason"
 
-    override def parse(value: String) = Try(new AmbryFailureIdHeader(value))
+    override def parse(value: String) = Try(new AmbryFailureIdHeader(value.toBoolean))
   }
 
 }
