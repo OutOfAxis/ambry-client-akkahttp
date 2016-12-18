@@ -1,21 +1,15 @@
 package helpers
 
 import java.util.concurrent.TimeUnit
-
 import akka.actor.{ ActorIdentity, ActorRef, ActorSystem, Identify }
 import akka.http.scaladsl.testkit.{ RouteTest, ScalatestRouteTest, TestFrameworkInterface }
-import akka.kafka.{ ConsumerSettings, ProducerSettings }
 import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
 import akka.testkit.{ ImplicitSender, TestKit }
-import io.outofaxis.pixelart.cms.router.infrastructure.player.xmp.adapter.ActorImplicits
-import io.pixelart.ambry.client.application.config.ActorImplicits
-import net.manub.embeddedkafka.{ EmbeddedKafka, EmbeddedKafkaConfig }
-import org.scalacheck.{ Arbitrary, Gen }
+import io.pixelart.ambry.client.application.ActorImplicits
 import org.scalatest._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.prop.{ Checkers, GeneratorDrivenPropertyChecks, PropertyChecks }
 import org.scalatest.concurrent.{ IntegrationPatience, ScalaFutures }
-
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
 import scala.concurrent.duration.FiniteDuration
@@ -41,11 +35,11 @@ abstract class AkkaSpec(name: String) extends TestKit(ActorSystem(s"$name-spec")
   implicit lazy val mat = ActorMaterializer()(system)
 
   trait ActorImplicitsTest extends ActorImplicits {
-    override implicit def actorSystem: ActorSystem = system
+    override implicit val actorSystem: ActorSystem = system
 
-    override implicit def executionContext: ExecutionContext = dispatcher
+    override implicit val executionContext: ExecutionContext = dispatcher
 
-    override implicit def materializer: ActorMaterializer = mat
+    override implicit val materializer: ActorMaterializer = mat
   }
   //  implicit val materializer = ActorMaterializer(ActorMaterializerSettings(system).withFuzzing(true))
 

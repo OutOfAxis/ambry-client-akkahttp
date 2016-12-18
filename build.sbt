@@ -16,9 +16,7 @@ val akkaVersion = "2.4.14"
 
 val akka_http_Version = "10.0.0"
 
-val macwireV = "2.2.5"
 
-val scalacheckTestVersion = "1.13.2"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -26,9 +24,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-core" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http-testkit" % akka_http_Version,
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test",
-  "com.softwaremill.macwire" %% "macros" % macwireV % "provided",
-  "com.softwaremill.macwire" %% "util" % macwireV,
   "org.mockito" % "mockito-all" % "1.10.19",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.slf4j" % "log4j-over-slf4j" % "1.7.12",
@@ -37,9 +32,12 @@ libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "2.14.0",
   "org.mockito" % "mockito-all" % "1.10.19",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
-  "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+  "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
+  "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
+
 )
 
+resolvers += "Artima Maven Repository" at "http://repo.artima.com/releases"
 
 
 scalacOptions ++= Seq(

@@ -1,6 +1,6 @@
 package io.pixelart.ambry.client.domain.model
 
-import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeaderCompanion}
+import akka.http.scaladsl.model.headers.{ ModeledCustomHeader, ModeledCustomHeaderCompanion }
 import com.github.nscala_time.time.Imports.DateTime
 
 import scala.util.Try

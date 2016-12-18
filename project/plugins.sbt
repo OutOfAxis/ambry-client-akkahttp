@@ -10,4 +10,5 @@ resolvers += Resolver.typesafeRepo("releases")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
+
 //addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.0")

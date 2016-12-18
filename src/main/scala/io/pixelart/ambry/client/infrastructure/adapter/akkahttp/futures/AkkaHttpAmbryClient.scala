@@ -7,11 +7,12 @@ import io.pixelart.ambry.client.domain.model._
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.Execution
 import scala.concurrent.Future
+import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
 /**
-  * Created by rabzu on 11/12/2016.
-  */
-trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient{
+ * Created by rabzu on 11/12/2016.
+ */
+trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient {
   this: Execution =>
 
   val ambryUri: AmbryUri

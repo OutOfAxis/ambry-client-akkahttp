@@ -6,6 +6,7 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
 import io.pixelart.ambry.client.domain.model._
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.Execution
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.GetBlobTransfer.GetBlobTransferRequestData
 
 object GetBlobTransfer {

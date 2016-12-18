@@ -1,12 +1,11 @@
 package io.pixelart.ambry.client.infrastructure.translator
 
-import akka.http.scaladsl.model.{StatusCodes, HttpResponse}
-import akka.http.scaladsl.model.headers.{Expires, Location}
+import akka.http.scaladsl.model.{ StatusCodes, HttpResponse }
+import akka.http.scaladsl.model.headers.{ Expires, Location }
 import akka.http.scaladsl.unmarshalling._
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
 import com.github.nscala_time.time.Imports.DateTime
-
 
 /**
  * Created by rabzu on 11/12/2016.
@@ -19,7 +18,7 @@ package object AmbryResponseUnmarshallers {
   implicit final val fromDeleteResponse: FromResponseUnmarshaller[Boolean] = {
     def unmarshal: PartialFunction[HttpResponse, Boolean] = {
       case HttpResponse(StatusCodes.Accepted, _, _, _) => true
-      case _ => false
+      case _                                           => false
     }
 
     Unmarshaller.strict(unmarshal)
@@ -100,7 +99,6 @@ package object AmbryResponseUnmarshallers {
         .collect { case h: AmbryTtlHeader => h }
         .headOption
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryTtlHeader.name}"))
-
 
       val ownerIdHeader = response
         .headers

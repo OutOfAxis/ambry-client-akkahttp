@@ -1,6 +1,5 @@
 package io.pixelart.ambry.client.domain.model
 
-
 sealed trait AmbryHttpException extends Exception
 
 final case class AmbryHttpResponseException(
@@ -26,7 +25,6 @@ final case class AmbryHttpBadRequestException(
 ) extends AmbryHttpException
 
 final case class AmbryHttpFileUploadException(
-  systemId: String,
   message: String = "error.uploading",
   nestedException: Throwable = null
 ) extends AmbryHttpException

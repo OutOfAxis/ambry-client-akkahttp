@@ -1,25 +1,25 @@
 package io.pixelart.ambry.test.client.model
 
 import akka.http.scaladsl.model
-import akka.http.scaladsl.model.{HttpEntity, StatusCodes, HttpResponse, ContentTypes}
-import akka.http.scaladsl.model.headers.{Expires, Location}
+import akka.http.scaladsl.model.{ HttpEntity, StatusCodes, HttpResponse, ContentTypes }
+import akka.http.scaladsl.model.headers.{ Expires, Location }
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import helpers.AkkaSpec
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpecLike}
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpecLike }
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration._
 import com.github.nscala_time.time.Imports.DateTime
+import scala.language.postfixOps
 
 /**
-  * Created by rabzu on 15/12/2016.
-  */
+ * Created by rabzu on 15/12/2016.
+ */
 class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with WordSpecLike with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
-
 
   import akka.http.scaladsl.unmarshalling._
 
@@ -47,7 +47,7 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Word
     creationTimeHeader.date,
     privateHeader.prvt,
     contentTypeHeader.contentType,
-    -1,
+    (nowMillis.getMillis * 0.001).toLong,
     Some(ownerIdHeader.ownerId)
   )
 

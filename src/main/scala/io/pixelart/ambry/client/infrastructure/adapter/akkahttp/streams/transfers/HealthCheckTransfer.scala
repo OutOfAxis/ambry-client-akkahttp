@@ -4,8 +4,9 @@ import akka.NotUsed
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
-import io.pixelart.ambry.client.domain.model.{AmbryHealthStatusResponse, AmbryUri}
+import io.pixelart.ambry.client.domain.model.{ AmbryHealthStatusResponse, AmbryUri }
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.Execution
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.HealthCheckTransfer.HealthCheckRequestData
 
 object HealthCheckTransfer {

@@ -1,7 +1,7 @@
 package io.pixelart.ambry.client.domain.model
 
 import java.util.NoSuchElementException
-import akka.http.scaladsl.model.{Uri, ContentType}
+import akka.http.scaladsl.model.{ Uri, ContentType }
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.github.nscala_time.time.Imports.DateTime
@@ -25,8 +25,8 @@ case class AmbryUri(uri: Uri)
 object AmbryHealthStatusResponse {
   def apply(status: String): AmbryHealthStatusResponse = status match {
     case "GOOD" => AmbryHealthStatusResponse(Good)
-    case "BAD" => AmbryHealthStatusResponse(Bad)
-    case _ => throw new NoSuchElementException
+    case "BAD"  => AmbryHealthStatusResponse(Bad)
+    case _      => throw new NoSuchElementException
   }
 }
 
@@ -36,29 +36,24 @@ object Good extends HealthStatus
 
 object Bad extends HealthStatus
 
-
 /**
-  * Ambry Front end server response
-  *
-  * @param status
-  */
+ * Ambry Front end server response
+ *
+ * @param status
+ */
 case class AmbryHealthStatusResponse(status: HealthStatus) extends AmbryHttpResponseModel
-
-
 
 //todo: 1. add user metadata support
 //todo: 2. make non required header fields Optional
 final case class UploadBlobRequestData(
-    blobSource: Source[ByteString, Any],
-    size: Long,
-    serviceId: AmbryServiceId,
-    contentType: ContentType,
-    ttl: Long = -1,
-    prvt: Boolean = false,
-    ownerId: AmbryOwnerId
+  blobSource: Source[ByteString, Any],
+  size: Long,
+  serviceId: AmbryServiceId,
+  contentType: ContentType,
+  ttl: Long = -1,
+  prvt: Boolean = false,
+  ownerId: AmbryOwnerId
 ) extends AmbryHttpRequestModel
-
-
 
 //todo: Add User Metadata fields
 case class AmbryBlobInfoResponse(

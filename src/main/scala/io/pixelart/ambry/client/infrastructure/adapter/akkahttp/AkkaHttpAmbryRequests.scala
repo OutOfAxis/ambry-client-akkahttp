@@ -2,13 +2,13 @@ package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
 import akka.http.scaladsl.model._
 import com.typesafe.scalalogging.StrictLogging
-import io.pixelart.ambry.client.application.config._
+import io.pixelart.ambry.client.application.ActorImplicits
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
 
 /**
-  * Created by rabzu on 11/12/2016.
-  */
+ * Created by rabzu on 11/12/2016.
+ */
 trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits {
 
   private val healthCheckAddress = "healthCheck"
@@ -20,12 +20,12 @@ trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits {
   //todo: 2. make non required header fields Optional
   def uploadBlobHttpRequest(ambryUri: AmbryUri, uploadBlobData: UploadBlobRequestData): HttpRequest = {
 
-    val sizeHeader =  AmbryBlobSizeHeader(uploadBlobData.size)
+    val sizeHeader = AmbryBlobSizeHeader(uploadBlobData.size)
     val serviceIdHeader = AmbryServiceIdHeader(uploadBlobData.serviceId)
-    val contentTypeHeader =  AmbryContentTypeHeader(uploadBlobData.contentType.mediaType.toString)
+    val contentTypeHeader = AmbryContentTypeHeader(uploadBlobData.contentType.mediaType.toString)
     val ttlHeader = AmbryTtlHeader(uploadBlobData.ttl)
     val privateHeader = AmbryPrivateHeader(uploadBlobData.prvt)
-    val ownerIdHeader =  AmbryOwnerIdHeader(uploadBlobData.ownerId)
+    val ownerIdHeader = AmbryOwnerIdHeader(uploadBlobData.ownerId)
 
     val headers = List(sizeHeader, serviceIdHeader, contentTypeHeader, ttlHeader, privateHeader, ownerIdHeader)
 
