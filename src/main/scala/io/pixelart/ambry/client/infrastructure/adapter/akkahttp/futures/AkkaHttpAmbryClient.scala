@@ -3,7 +3,7 @@ package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.futures
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.typesafe.scalalogging.StrictLogging
-import io.pixelart.ambry.client.domain.model._
+import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.Execution
 import scala.concurrent.Future

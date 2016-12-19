@@ -1,6 +1,7 @@
 package io.pixelart.ambry.client.infrastructure.adapter
 
 import io.pixelart.ambry.client.domain.model._
+import io.pixelart.ambry.client.domain.model.httpModel._
 
 import scala.concurrent.Future
 

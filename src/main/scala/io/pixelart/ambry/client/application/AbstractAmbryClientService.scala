@@ -7,7 +7,7 @@ package io.pixelart.ambry.client.application
 import java.nio.file.Path
 import akka.http.scaladsl.model.ContentType
 import akka.stream.IOResult
-import io.pixelart.ambry.client.domain.model._
+import io.pixelart.ambry.client.domain.model.httpModel._
 import scala.concurrent.Future
 
 trait AbstractAmbryClientService {

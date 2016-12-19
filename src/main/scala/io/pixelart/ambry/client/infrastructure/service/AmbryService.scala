@@ -7,6 +7,7 @@ import akka.stream.scaladsl.{ Source, FileIO }
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.{ ActorImplicits, AbstractAmbryClientService }
 import io.pixelart.ambry.client.domain.model._
+import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.{ AmbryClient }
 import scala.concurrent.Future
 

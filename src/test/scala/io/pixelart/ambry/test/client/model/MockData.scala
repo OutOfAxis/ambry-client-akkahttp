@@ -11,7 +11,7 @@ import com.typesafe.config.ConfigFactory
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
 import scala.collection.mutable.ListBuffer
-
+import io.pixelart.ambry.client.domain.model.httpModel._
 /**
  * Created by rabzu on 18/12/2016.
  */

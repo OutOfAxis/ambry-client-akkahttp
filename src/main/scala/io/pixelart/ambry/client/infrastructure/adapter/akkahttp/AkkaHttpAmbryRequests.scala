@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.headers.RawHeader
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.ActorImplicits
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
-import io.pixelart.ambry.client.domain.model._
+import io.pixelart.ambry.client.domain.model.httpModel._
 
 /**
  * Created by rabzu on 11/12/2016.

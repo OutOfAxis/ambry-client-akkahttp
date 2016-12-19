@@ -2,7 +2,7 @@ package io.pixelart.ambry.client.application
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import io.pixelart.ambry.client.domain.model.AmbryUri
+import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.{ RequestsSuperPoolExecutor, AkkaHttpAmbryRequests }
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.{ RequestsExecutor, Execution }

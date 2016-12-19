@@ -8,6 +8,7 @@ import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
 import com.github.nscala_time.time.Imports.DateTime
+import io.pixelart.ambry.client.domain.model.httpModel._
 import org.joda.time.format.DateTimeFormat
 
 /**
@@ -38,7 +39,7 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
         .collectFirst { case l: Location => l }
         .getOrElse(throw new NoSuchElementException("header not found: Location"))
 
-      AmbryBlobUploadResponse(AmbryId(locheader.uri.toString))
+      AmbryBlobUploadResponse(AmbryId.fromAmbry(locheader.uri.toString))
     }
     Unmarshaller.strict(unmarshal)
   }

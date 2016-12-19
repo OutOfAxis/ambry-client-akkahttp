@@ -7,7 +7,7 @@ import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.StrictLogging
 import helpers.AkkaSpec
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
-import io.pixelart.ambry.client.domain.model._
+import io.pixelart.ambry.client.domain.model.httpModel._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpecLike }
 import scala.concurrent.duration._
