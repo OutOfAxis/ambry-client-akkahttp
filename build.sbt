@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 
 import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSingleLineCaseStatements}
 
-name := """ambry-client-stream"""
+name := """ambry-client-akkahttp"""
 
 version := "0.1"
 
