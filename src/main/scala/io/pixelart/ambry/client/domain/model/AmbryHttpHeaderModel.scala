@@ -29,7 +29,7 @@ object AmbryHttpHeaderModel {
   object AmbryBlobSizeHeader extends ModeledCustomHeaderCompanion[AmbryBlobSizeHeader] {
     override val name = "x-ambry-blob-size"
 
-    override def parse(value: String) = Try(new AmbryBlobSizeHeader(value.toLong))
+    override def parse(value: String) = Try(AmbryBlobSizeHeader(value.toLong))
   }
 
   /**
@@ -61,7 +61,8 @@ object AmbryHttpHeaderModel {
 
     override val companion = AmbryCreationTimeHeader
 
-    override def value: String = date.getMillis.toString
+    override def value: String = date.toString
+    //    override def value: String = date.getMillis.toString
   }
 
   object AmbryCreationTimeHeader extends ModeledCustomHeaderCompanion[AmbryCreationTimeHeader] {

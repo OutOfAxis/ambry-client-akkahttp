@@ -24,6 +24,7 @@ trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient {
   }
 
   override def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse] = {
+    logger.info("Posting file with owner" + uploadData.ownerId.value)
     val httpReq = httpRequests.uploadBlobHttpRequest(ambryUri, uploadData)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobUploadResponse]
     requestsExecutor.executeRequest(httpReq, unmarshalFunc)
@@ -37,7 +38,7 @@ trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient {
 
   override def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse] = {
     val httpReq = httpRequests.getBlobInfoHttpRequest(ambryUri, ambryId)
-    val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobInfoResponse]
+    val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobInfoResponse](fromGetBlobInfoResponse, executionContext, materializer)
     requestsExecutor.executeRequest(httpReq, unmarshalFunc)
   }
 

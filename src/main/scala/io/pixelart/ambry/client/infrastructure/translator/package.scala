@@ -1,16 +1,21 @@
 package io.pixelart.ambry.client.infrastructure.translator
 
-import akka.http.scaladsl.model.{ StatusCodes, HttpResponse }
+import akka.http.javadsl.model.headers.LastModified
+import akka.http.scaladsl.model.{ HttpHeader, StatusCodes, HttpResponse }
 import akka.http.scaladsl.model.headers.{ Expires, Location }
 import akka.http.scaladsl.unmarshalling._
+import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
 import com.github.nscala_time.time.Imports.DateTime
+import org.joda.time.format.DateTimeFormat
 
 /**
  * Created by rabzu on 11/12/2016.
  */
-package object AmbryResponseUnmarshallers {
+
+//fixme: for some reason akka-http does not recognise AmbryHeaders as Custom headers. its wiered because Spec shows equivalece of the two
+package object AmbryResponseUnmarshallers extends StrictLogging {
 
   implicit final val fromHealthCheckResponse: FromEntityUnmarshaller[AmbryHealthStatusResponse] =
     PredefinedFromEntityUnmarshallers.stringUnmarshaller.map(AmbryHealthStatusResponse(_))
@@ -30,8 +35,7 @@ package object AmbryResponseUnmarshallers {
 
       val locheader = response
         .headers
-        .collect { case l: Location => l }
-        .headOption
+        .collectFirst { case l: Location => l }
         .getOrElse(throw new NoSuchElementException("header not found: Location"))
 
       AmbryBlobUploadResponse(AmbryId(locheader.uri.toString))
@@ -45,74 +49,70 @@ package object AmbryResponseUnmarshallers {
 
       val sizeHeader = response
         .headers
-        .collect { case h: AmbryBlobSizeHeader => h }
-        .headOption
+        .collectFirst {
+          case HttpHeader("x-ambry-blob-size", value) ⇒ value
+        }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryBlobSizeHeader.name}"))
 
       val expiresHeader = response
         .headers
-        .collect { case h: Expires => h }
-        .headOption
+        .collectFirst { case h: Expires => h }
         .getOrElse(throw new NoSuchElementException("header not found: Expires"))
 
       val e = new DateTime(expiresHeader.date.clicks)
-      AmbryGetBlobResponse(response.entity.dataBytes, sizeHeader.size, response.entity.contentType, e)
+      AmbryGetBlobResponse(response.entity.dataBytes, sizeHeader.toLong, response.entity.contentType, e)
     }
     Unmarshaller.strict(unmarshal)
   }
 
   implicit final val fromGetBlobInfoResponse: FromResponseUnmarshaller[AmbryBlobInfoResponse] = {
     def unmarshal(response: HttpResponse) = {
-
       val sizeHeader = response
         .headers
-        .collect { case h: AmbryBlobSizeHeader => h }
-        .headOption
+        .collectFirst {
+          case HttpHeader("x-ambry-blob-size", value) ⇒ value
+        }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryBlobSizeHeader.name}"))
 
       val serviceIdHeader = response
         .headers
-        .collect { case h: AmbryServiceIdHeader => h }
-        .headOption
+        .collectFirst { case HttpHeader(AmbryServiceIdHeader.name, value) => value }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryServiceIdHeader.name}"))
 
       val creationTimeHeader = response
         .headers
-        .collect { case h: AmbryCreationTimeHeader => h }
-        .headOption
+        .collectFirst {
+          case HttpHeader(AmbryCreationTimeHeader.name, value) =>
+            value
+        }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryCreationTimeHeader.name}"))
 
       val privateHeader = response
         .headers
-        .collect { case h: AmbryPrivateHeader => h }
-        .headOption
+        .collectFirst { case HttpHeader(AmbryPrivateHeader.name, value) => value }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryPrivateHeader.name}"))
 
       val contentTypeHeader = response
         .headers
-        .collect { case h: AmbryContentTypeHeader => h }
-        .headOption
+        .collectFirst { case HttpHeader(AmbryContentTypeHeader.name, value) => value }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryContentTypeHeader.name}"))
 
       val ttlHeader = response
         .headers
-        .collect { case h: AmbryTtlHeader => h }
-        .headOption
-        .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryTtlHeader.name}"))
+        .collectFirst { case HttpHeader(AmbryTtlHeader.name, value) => value }
 
       val ownerIdHeader = response
         .headers
-        .collect { case h: AmbryOwnerIdHeader => h }
-        .headOption
+        .collectFirst { case HttpHeader(AmbryOwnerIdHeader.name, value) => AmbryOwnerId(value) }
 
       AmbryBlobInfoResponse(
-        sizeHeader.size,
-        serviceIdHeader.id,
-        creationTimeHeader.date,
-        privateHeader.prvt,
-        contentTypeHeader.contentType,
-        ttlHeader.ttl,
-        ownerIdHeader.map(_.ownerId)
+        sizeHeader.toLong,
+        AmbryServiceId(serviceIdHeader),
+        creationTimeHeader,
+        privateHeader.toBoolean,
+        contentTypeHeader,
+        ttlHeader.map(_.toLong),
+        ownerIdHeader
       )
     }
     Unmarshaller.strict(unmarshal)

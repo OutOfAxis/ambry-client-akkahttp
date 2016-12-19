@@ -1,6 +1,7 @@
 package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.RawHeader
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.ActorImplicits
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
@@ -27,14 +28,26 @@ trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits {
     val privateHeader = AmbryPrivateHeader(uploadBlobData.prvt)
     val ownerIdHeader = AmbryOwnerIdHeader(uploadBlobData.ownerId)
 
-    val headers = List(sizeHeader, serviceIdHeader, contentTypeHeader, ttlHeader, privateHeader, ownerIdHeader)
+    //fixme: for some reason Ambry does not recognise Custom Headers so I created Manually. its wiered because Spec shows equivalece of the two
+    //val headersList = List(sizeHeader, serviceIdHeader, contentTypeHeader, ttlHeader, privateHeader, ownerIdHeader)
 
-    HttpRequest(
+    val headersList = List(
+      RawHeader(sizeHeader.name, sizeHeader.size.toString),
+      RawHeader(serviceIdHeader.name(), serviceIdHeader.id.value),
+      RawHeader(contentTypeHeader.name(), contentTypeHeader.value),
+      RawHeader(ttlHeader.name(), ttlHeader.value),
+      RawHeader(privateHeader.name(), privateHeader.value),
+      RawHeader(ownerIdHeader.name(), ownerIdHeader.value)
+    )
+
+    val r = HttpRequest(
       uri = s"${ambryUri.uri}/",
-      headers = headers,
       method = HttpMethods.POST,
       entity = HttpEntity.Default(uploadBlobData.contentType, uploadBlobData.size, uploadBlobData.blobSource)
-    )
+    ).withHeaders(headersList)
+    logger.info(r.toString())
+    r
+
   }
 
   def getBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =

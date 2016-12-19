@@ -20,7 +20,8 @@ case class AmbryOwnerId(value: String)
 
 case class AmbryServiceId(value: String)
 
-case class AmbryUri(uri: Uri)
+//todo: replace it with akka Uri model
+case class AmbryUri(uri: String)
 
 object AmbryHealthStatusResponse {
   def apply(status: String): AmbryHealthStatusResponse = status match {
@@ -59,10 +60,10 @@ final case class UploadBlobRequestData(
 case class AmbryBlobInfoResponse(
   blobSize: Long,
   serviceId: AmbryServiceId,
-  creationTime: DateTime,
+  creationTime: String,
   isPrivate: Boolean,
   ambryContentType: String,
-  ttl: Long = -1,
+  ttl: Option[Long] = Some(-1),
   ownerId: Option[AmbryOwnerId]
 ) extends AmbryHttpResponseModel
 

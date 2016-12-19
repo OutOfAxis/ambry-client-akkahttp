@@ -3,19 +3,22 @@ package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
+import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.{ AmbryHttpFileUploadException, AmbryHttpAuthorisationException, AmbryHttpBadRequestException }
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success, Try }
 
-trait AkkaHttpAmbryResponseHandler {
+trait AkkaHttpAmbryResponseHandler extends StrictLogging {
 
   protected def handleHttpResponse[T](httpResponse: HttpResponse, unmarshal: HttpResponse => Future[T])(implicit ec: ExecutionContext, mat: ActorMaterializer): Future[T] = {
     httpResponse match {
       case response @ HttpResponse(StatusCodes.OK, _, _, _) =>
-        unmarshal(response).recover {
-          case e => throw new AmbryHttpBadRequestException(e.getMessage)
-        }
+
+        unmarshal(response)
+      //          .recover {
+      //          case e =>
+      //            throw new AmbryHttpBadRequestException(e.getMessage)}
       case response @ HttpResponse(StatusCodes.Created, _, _, _) =>
         unmarshal(response).recover {
           case e => throw new AmbryHttpBadRequestException(e.getMessage)
