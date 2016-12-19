@@ -1,4 +1,16 @@
-activator-akka-scala-seed
-=========================
+##ambry-client-akkahttp
 
-A minimal seed template for an Akka with Scala build 
+
+###FUN
+
+###OVERVIEW
+ambry-client-akkahttp is Akka-http client library for [Ambry](https://github.com/linkedin/ambry) distributed object store in Scala
+
+###QUICK START
+
+###DETAILED USAGE
+
+###CAVEATS
+
+###LICENSE
+ 
