@@ -5,12 +5,11 @@ import io.pixelart.ambry.client.application.ActorImplicits
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryRequests
 import scala.concurrent.Future
 
-trait Execution extends ActorImplicits {
-  def requestsExecutor: RequestsExecutor
-  def httpRequests: AkkaHttpAmbryRequests
+private[client] trait Execution extends ActorImplicits {
+  this: RequestsExecutor with AkkaHttpAmbryRequests =>
 }
 
-trait RequestsExecutor {
+private[client] trait RequestsExecutor {
   protected[akkahttp] def executeRequest[T](httpReq: HttpRequest, unmarshalFunc: HttpResponse => Future[T]): Future[T]
 
 }

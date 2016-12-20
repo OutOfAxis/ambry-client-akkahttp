@@ -8,7 +8,7 @@ import scala.util.Try
 /**
  * Created by rabzu on 11/12/2016.
  */
-object AmbryHttpHeaderModel {
+private[client] object  AmbryHttpHeaderModel {
 
   /**
    * header:

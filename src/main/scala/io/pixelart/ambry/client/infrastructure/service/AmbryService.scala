@@ -6,7 +6,6 @@ import akka.stream.IOResult
 import akka.stream.scaladsl.{ Source, FileIO }
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.{ ActorImplicits, AbstractAmbryClientService }
-import io.pixelart.ambry.client.domain.model._
 import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.{ AmbryClient }
 import scala.concurrent.Future
@@ -14,25 +13,24 @@ import scala.concurrent.Future
 /**
  * Created by rabzu on 11/12/2016.
  */
-trait AmbryService extends AbstractAmbryClientService with StrictLogging with ActorImplicits {
+ trait AmbryService extends AbstractAmbryClientService with StrictLogging with ActorImplicits {
+  this: AmbryClient =>
 
-  val ambryClient: AmbryClient
-  val ambryUri: AmbryUri
+  private[client] val ambryUri: AmbryUri
 
   override def healthCheck: Future[AmbryHealthStatusResponse] =
-    ambryClient.healthCheckRequest
+    healthCheckRequest
 
   override def getFileProperty(ambryId: AmbryId): Future[AmbryBlobInfoResponse] =
-    ambryClient.getBlobInfoRequest(ambryId)
+    getBlobInfoRequest(ambryId)
 
   //todo: override def getFileUserMetadata(ambryId: AmbryId): AmbryUMResponse = ???
 
   override def getFile(ambryId: AmbryId): Future[AmbryGetBlobResponse] =
-    ambryClient.getBlobRequest(ambryId)
+    getBlobRequest(ambryId)
 
   override def getFile(ambryId: AmbryId, localPath: Path): Future[IOResult] =
-    ambryClient
-      .getBlobRequest(ambryId)
+    getBlobRequest(ambryId)
       .flatMap { result =>
         result
           .blob
@@ -51,12 +49,12 @@ trait AmbryService extends AbstractAmbryClientService with StrictLogging with Ac
 
     val fileSource = FileIO.fromPath(localPath)
     val size = Files.size(localPath)
-    ambryClient.uploadBlobRequest(UploadBlobRequestData(fileSource, size, serviceId, contentType, ttl, prvt, ownerId))
+    uploadBlobRequest(UploadBlobRequestData(fileSource, size, serviceId, contentType, ttl, prvt, ownerId))
   }
 
   override def postFile(uploadBlobRequestData: UploadBlobRequestData): Future[AmbryBlobUploadResponse] =
-    ambryClient.uploadBlobRequest(uploadBlobRequestData)
+    uploadBlobRequest(uploadBlobRequestData)
 
   override def deleteFile(ambryId: AmbryId): Future[Boolean] =
-    ambryClient.deleteBlobRequest(ambryId)
+    deleteBlobRequest(ambryId)
 }

@@ -21,7 +21,7 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
   "Ambry service" should {
 
     "1. return  HealthCheck Good from real Ambry server" in {
-      val healthCheckFuture = client.ambryService.healthCheck
+      val healthCheckFuture = client.healthCheck
 
       whenReady(healthCheckFuture, timeout(10 seconds)) { r =>
         r shouldEqual AmbryHealthStatusResponse("GOOD")
@@ -29,20 +29,20 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
     }
 
     "2. should upload file" in {
-      val uploadRequest = client.ambryService.postFile(uploadData)
+      val uploadRequest = client.postFile(uploadData)
       whenReady(uploadRequest, timeout(10 seconds)) { r =>
         ambryId = Some(r.ambryId)
         logger.info(r.ambryId.value)
       }
     }
     "3. should get file" in {
-      val uploadRequest = client.ambryService.getFileProperty(ambryId.get)
+      val uploadRequest = client.getFileProperty(ambryId.get)
       whenReady(uploadRequest, timeout(10 seconds)) { r =>
         r.serviceId.value shouldEqual "ServiceId"
       }
     }
     "4. delete fine in ambyr" in {
-      val uploadRequest = client.ambryService.deleteFile(ambryId.get)
+      val uploadRequest = client.deleteFile(ambryId.get)
       whenReady(uploadRequest, timeout(10 seconds)) { r =>
         r shouldEqual true
       }
