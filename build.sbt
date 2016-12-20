@@ -4,7 +4,7 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "0.2"
+version := "1.0.2-SNAPSHOT"
 
 organization := "io.outofaxis"
 
@@ -76,3 +76,14 @@ logBuffered in Test := false
 updateOptions := updateOptions.value.withCachedResolution(true)
 
 parallelExecution in Test := false
+
+publishTo := {
+  val nexus = "http://pixelart.ge:8081/nexus/"
+  if (version.value.trim.endsWith("SNAPSHOT"))
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "content/repositories/releases")
+}
+
+credentials += Credentials("Sonatype Nexus Repository Manager", "taxitube.ge", "admin", "F9bz4Nx3rwul")
+
