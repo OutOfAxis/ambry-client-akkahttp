@@ -30,3 +30,4 @@ class AmbryAkkaHttpClient(host: String, port: Int = 1174)(implicit sys: ActorSys
   private[client] override val ambryUri: AmbryUri = AmbryUri(host + ":" + port.toString)
 
 }
+

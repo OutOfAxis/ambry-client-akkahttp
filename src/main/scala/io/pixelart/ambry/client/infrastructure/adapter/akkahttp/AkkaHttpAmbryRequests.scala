@@ -14,12 +14,12 @@ protected[client] trait AkkaHttpAmbryRequests extends StrictLogging with ActorIm
 
   private val healthCheckAddress = "healthCheck"
 
-  def healthStatusHttpRequest(ambryUri: AmbryUri) =
+  protected[client] def healthStatusHttpRequest(ambryUri: AmbryUri) =
     HttpRequest(uri = s"${ambryUri.uri}/$healthCheckAddress", method = HttpMethods.GET)
 
   //todo: 1. add user metadata support
   //todo: 2. make non required header fields Optional
-  def uploadBlobHttpRequest(ambryUri: AmbryUri, uploadBlobData: UploadBlobRequestData): HttpRequest = {
+  protected[client] def uploadBlobHttpRequest(ambryUri: AmbryUri, uploadBlobData: UploadBlobRequestData): HttpRequest = {
 
     val sizeHeader = AmbryBlobSizeHeader(uploadBlobData.size)
     val serviceIdHeader = AmbryServiceIdHeader(uploadBlobData.serviceId)
@@ -50,24 +50,24 @@ protected[client] trait AkkaHttpAmbryRequests extends StrictLogging with ActorIm
 
   }
 
-  def getBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
+  protected[client] def getBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET)
 
-  def getBlobInfoHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
+  protected[client] def getBlobInfoHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}/BlobInfo", method = HttpMethods.GET)
 
   /*todo: complete
-    def getUserMetadataHttpRequest(ambryUri: AmbryUri, ambryId: String @@ AmbryId ): HttpRequest =
+    protected[client] def getUserMetadataHttpRequest(ambryUri: AmbryUri, ambryId: String @@ AmbryId ): HttpRequest =
     HttpRequest(uri = s"$ambryUri/$ambryId/BlobInfo")
   */
   //todo: complete: data format is not specidied in the Ambry docs
-  //def modifiedSinceReuqest(ambryUri: AmbryUri, date: Date)
+  //protected[client] def modifiedSinceReuqest(ambryUri: AmbryUri, date: Date)
 
   //todo: not impleneted in the client side
-  def getBlobPropertiesHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
+  protected[client] def getBlobPropertiesHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"$ambryUri/${ambryId.value}", method = HttpMethods.GET)
 
-  def deleteBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
+  protected[client] def deleteBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.DELETE)
 
 }

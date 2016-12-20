@@ -15,6 +15,8 @@ import MockData._
  */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
+  import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel
+
   val client = new AmbryAkkaHttpClient("http://pixelart.ge")
   var ambryId: Option[AmbryId] = None
 

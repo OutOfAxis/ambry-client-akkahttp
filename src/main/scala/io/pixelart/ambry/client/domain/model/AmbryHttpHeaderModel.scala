@@ -16,7 +16,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * The size of the blob being uploaded
    */
-  final case class AmbryBlobSizeHeader(size: Long) extends ModeledCustomHeader[AmbryBlobSizeHeader] {
+  protected[client] final case class AmbryBlobSizeHeader(size: Long) extends ModeledCustomHeader[AmbryBlobSizeHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -26,7 +26,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = size.toString
   }
 
-  object AmbryBlobSizeHeader extends ModeledCustomHeaderCompanion[AmbryBlobSizeHeader] {
+  protected[client] object AmbryBlobSizeHeader extends ModeledCustomHeaderCompanion[AmbryBlobSizeHeader] {
     override val name = "x-ambry-blob-size"
 
     override def parse(value: String) = Try(AmbryBlobSizeHeader(value.toLong))
@@ -38,7 +38,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * The ID of the service that is uploading the blob
    */
-  final case class AmbryServiceIdHeader(id: AmbryServiceId) extends ModeledCustomHeader[AmbryServiceIdHeader] {
+  protected[client] final case class AmbryServiceIdHeader(id: AmbryServiceId) extends ModeledCustomHeader[AmbryServiceIdHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -48,13 +48,13 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = id.value
   }
 
-  object AmbryServiceIdHeader extends ModeledCustomHeaderCompanion[AmbryServiceIdHeader] {
+  protected[client] object AmbryServiceIdHeader extends ModeledCustomHeaderCompanion[AmbryServiceIdHeader] {
     override val name = "x-ambry-service-id"
 
     override def parse(value: String) = Try(AmbryServiceIdHeader(AmbryServiceId(value)))
   }
 
-  final case class AmbryCreationTimeHeader(date: DateTime) extends ModeledCustomHeader[AmbryCreationTimeHeader] {
+  protected[client] final case class AmbryCreationTimeHeader(date: DateTime) extends ModeledCustomHeader[AmbryCreationTimeHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -65,7 +65,7 @@ private[client] object AmbryHttpHeaderModel {
     //    override def value: String = date.getMillis.toString
   }
 
-  object AmbryCreationTimeHeader extends ModeledCustomHeaderCompanion[AmbryCreationTimeHeader] {
+  protected[client] object AmbryCreationTimeHeader extends ModeledCustomHeaderCompanion[AmbryCreationTimeHeader] {
     override val name = "x-ambry-creation-time"
 
     override def parse(value: String) = Try(AmbryCreationTimeHeader(new DateTime(value.toLong)))
@@ -80,7 +80,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * todo: replace string content type with akka-http content type
    */
-  final case class AmbryContentTypeHeader(contentType: String) extends ModeledCustomHeader[AmbryContentTypeHeader] {
+  protected[client] final case class AmbryContentTypeHeader(contentType: String) extends ModeledCustomHeader[AmbryContentTypeHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -90,7 +90,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = contentType
   }
 
-  object AmbryContentTypeHeader extends ModeledCustomHeaderCompanion[AmbryContentTypeHeader] {
+  protected[client] object AmbryContentTypeHeader extends ModeledCustomHeaderCompanion[AmbryContentTypeHeader] {
     override val name = "x-ambry-content-type"
 
     override def parse(value: String) = Try(new AmbryContentTypeHeader(value))
@@ -102,7 +102,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * The time in seconds for which the blob is valid. Defaults to -1 (infinite validity)
    */
-  final case class AmbryTtlHeader(ttl: Long) extends ModeledCustomHeader[AmbryTtlHeader] {
+  protected[client] final case class AmbryTtlHeader(ttl: Long) extends ModeledCustomHeader[AmbryTtlHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -112,7 +112,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = ttl.toString
   }
 
-  object AmbryTtlHeader extends ModeledCustomHeaderCompanion[AmbryTtlHeader] {
+  protected[client] object AmbryTtlHeader extends ModeledCustomHeaderCompanion[AmbryTtlHeader] {
     override val name = "x-ambry-ttl"
 
     override def parse(value: String) = Try(AmbryTtlHeader(value.toLong))
@@ -124,7 +124,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * Makes the blob private if set to true. Defaults to false (blob is public)
    */
-  final case class AmbryPrivateHeader(prvt: Boolean) extends ModeledCustomHeader[AmbryPrivateHeader] {
+  protected[client] final case class AmbryPrivateHeader(prvt: Boolean) extends ModeledCustomHeader[AmbryPrivateHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -134,7 +134,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = prvt.toString
   }
 
-  object AmbryPrivateHeader extends ModeledCustomHeaderCompanion[AmbryPrivateHeader] {
+  protected[client] object AmbryPrivateHeader extends ModeledCustomHeaderCompanion[AmbryPrivateHeader] {
     override val name = "x-ambry-private"
 
     override def parse(value: String) = Try(new AmbryPrivateHeader(value.toBoolean))
@@ -146,7 +146,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * The owner of the blob.
    */
-  final case class AmbryOwnerIdHeader(ownerId: AmbryOwnerId) extends ModeledCustomHeader[AmbryOwnerIdHeader] {
+  protected[client] final case class AmbryOwnerIdHeader(ownerId: AmbryOwnerId) extends ModeledCustomHeader[AmbryOwnerIdHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -156,7 +156,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = ownerId.value
   }
 
-  object AmbryOwnerIdHeader extends ModeledCustomHeaderCompanion[AmbryOwnerIdHeader] {
+  protected[client] object AmbryOwnerIdHeader extends ModeledCustomHeaderCompanion[AmbryOwnerIdHeader] {
     override val name = "x-ambry-owner-id"
 
     override def parse(value: String) = Try(new AmbryOwnerIdHeader(AmbryOwnerId(value)))
@@ -170,7 +170,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    */
   //todo: Add this. needs changing
-  /*final case class AmbryUserMetadataHeader(k: String, v: String) extends ModeledCustomHeader[AmbryUserMetadataHeader] {
+  /*protected[client] final case class AmbryUserMetadataHeader(k: String, v: String) extends ModeledCustomHeader[AmbryUserMetadataHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -180,7 +180,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = v
   }
 
-  object AmbryUserMetadataHeader extends ModeledCustomHeaderCompanion[AmbryUserMetadataHeader] {
+  protected[client]object AmbryUserMetadataHeader extends ModeledCustomHeaderCompanion[AmbryUserMetadataHeader] {
     override val name = "x-ambry-um-"
 
     override def parse(value: String) = Try(new AmbryUserMetadataHeader(value))
@@ -193,7 +193,7 @@ private[client] object AmbryHttpHeaderModel {
    *
    * The owner of the blob.
    */
-  final case class AmbryFailureIdHeader(failure: Boolean) extends ModeledCustomHeader[AmbryFailureIdHeader] {
+  protected[client] final case class AmbryFailureIdHeader(failure: Boolean) extends ModeledCustomHeader[AmbryFailureIdHeader] {
     override def renderInRequests = false
 
     override def renderInResponses = false
@@ -203,7 +203,7 @@ private[client] object AmbryHttpHeaderModel {
     override def value: String = failure.toString
   }
 
-  object AmbryFailureIdHeader extends ModeledCustomHeaderCompanion[AmbryFailureIdHeader] {
+  protected[client] object AmbryFailureIdHeader extends ModeledCustomHeaderCompanion[AmbryFailureIdHeader] {
     override val name = "x-ambry-failure-reason"
 
     override def parse(value: String) = Try(new AmbryFailureIdHeader(value.toBoolean))
