@@ -10,16 +10,16 @@ import scala.concurrent.Future
  */
 
 //todo: make return type more general
-trait AmbryClient {
+private[client] trait AmbryClient {
 
-  def healthCheckRequest: Future[AmbryHealthStatusResponse]
+  private[client] def healthCheckRequest: Future[AmbryHealthStatusResponse]
 
-  def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse]
+  private[client] def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse]
 
-  def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse]
+  private[client] def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse]
 
-  def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse]
+  private[client] def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse]
 
-  def deleteBlobRequest(ambryId: AmbryId): Future[Boolean]
+  private[client] def deleteBlobRequest(ambryId: AmbryId): Future[Boolean]
 
 }

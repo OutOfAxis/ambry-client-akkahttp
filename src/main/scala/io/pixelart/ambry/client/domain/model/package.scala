@@ -5,12 +5,11 @@ import akka.http.scaladsl.model.{ Uri, ContentType }
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.github.nscala_time.time.Imports.DateTime
-import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 
 /**
  * Created by rabzu on 14/12/2016.
  */
-package object httpModel {
+ package  object httpModel {
 
   sealed trait AmbryHttpRequestModel
 

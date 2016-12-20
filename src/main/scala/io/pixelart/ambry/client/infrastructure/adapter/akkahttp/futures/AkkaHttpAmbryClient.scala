@@ -12,7 +12,7 @@ import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshal
 /**
  * Created by rabzu on 11/12/2016.
  */
-trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient {
+private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient {
   this: Execution =>
 
   val ambryUri: AmbryUri
