@@ -5,24 +5,24 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Flow
 import io.pixelart.ambry.client.domain.model.httpModel._
-import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryResponseHandler
-import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.Execution
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.{ AkkaHttpAmbryRequests, AkkaHttpAmbryResponseHandler }
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.{ RequestsExecutor, Execution }
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers.HealthCheckTransfer.HealthCheckRequestData
 
-object HealthCheckTransfer {
+private[client] object HealthCheckTransfer {
   case class HealthCheckRequestData(ambryUri: AmbryUri)
 }
 
-trait HealthCheckTransfer extends AkkaHttpAmbryResponseHandler {
-  self: Execution =>
+private[client] trait HealthCheckTransfer extends AkkaHttpAmbryResponseHandler {
+  self: AkkaHttpAmbryRequests with RequestsExecutor with Execution =>
 
   import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
   def flowHealthCheck: Flow[HealthCheckRequestData, AmbryHealthStatusResponse, NotUsed] =
     Flow[HealthCheckRequestData].mapAsync(1) { data =>
-      val httpReq = httpRequests.healthStatusHttpRequest(data.ambryUri)
+      val httpReq = healthStatusHttpRequest(data.ambryUri)
       val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryHealthStatusResponse]
 
-      requestsExecutor.executeRequest(httpReq, unmarshalFunc)
+      executeRequest(httpReq, unmarshalFunc)
     }
 }

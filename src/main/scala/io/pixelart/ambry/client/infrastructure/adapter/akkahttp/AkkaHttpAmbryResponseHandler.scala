@@ -9,8 +9,9 @@ import io.pixelart.ambry.client.domain.model.{ AmbryHttpFileUploadException, Amb
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success, Try }
 
-trait AkkaHttpAmbryResponseHandler extends StrictLogging {
+private[client] trait AkkaHttpAmbryResponseHandler extends StrictLogging {
 
+  //todo: Exception handling
   protected def handleHttpResponse[T](httpResponse: HttpResponse, unmarshal: HttpResponse => Future[T])(implicit ec: ExecutionContext, mat: ActorMaterializer): Future[T] = {
     httpResponse match {
       case response @ HttpResponse(StatusCodes.OK, _, _, _) =>

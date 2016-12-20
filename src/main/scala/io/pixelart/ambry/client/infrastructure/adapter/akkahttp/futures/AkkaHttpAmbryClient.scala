@@ -5,7 +5,8 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
-import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.Execution
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryRequests
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.{ RequestsExecutor, Execution }
 import scala.concurrent.Future
 import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
 
@@ -13,39 +14,39 @@ import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshal
  * Created by rabzu on 11/12/2016.
  */
 private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient {
-  this: Execution =>
+  this: AkkaHttpAmbryRequests with RequestsExecutor with Execution =>
 
-  val ambryUri: AmbryUri
+  private[client] val ambryUri: AmbryUri
 
   override def healthCheckRequest: Future[AmbryHealthStatusResponse] = {
-    val httpReq = httpRequests.healthStatusHttpRequest(ambryUri)
+    val httpReq = healthStatusHttpRequest(ambryUri)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryHealthStatusResponse]
-    requestsExecutor.executeRequest(httpReq, unmarshalFunc)
+    executeRequest(httpReq, unmarshalFunc)
   }
 
   override def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse] = {
     logger.info("Posting file with owner" + uploadData.ownerId.value)
-    val httpReq = httpRequests.uploadBlobHttpRequest(ambryUri, uploadData)
+    val httpReq = uploadBlobHttpRequest(ambryUri, uploadData)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobUploadResponse]
-    requestsExecutor.executeRequest(httpReq, unmarshalFunc)
+    executeRequest(httpReq, unmarshalFunc)
   }
 
   override def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse] = {
-    val httpReq = httpRequests.getBlobHttpRequest(ambryUri, ambryId)
+    val httpReq = getBlobHttpRequest(ambryUri, ambryId)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
-    requestsExecutor.executeRequest(httpReq, unmarshalFunc)
+    executeRequest(httpReq, unmarshalFunc)
   }
 
   override def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse] = {
-    val httpReq = httpRequests.getBlobInfoHttpRequest(ambryUri, ambryId)
+    val httpReq = getBlobInfoHttpRequest(ambryUri, ambryId)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobInfoResponse](fromGetBlobInfoResponse, executionContext, materializer)
-    requestsExecutor.executeRequest(httpReq, unmarshalFunc)
+    executeRequest(httpReq, unmarshalFunc)
   }
 
   override def deleteBlobRequest(ambryId: AmbryId): Future[Boolean] = {
-    val httpReq = httpRequests.deleteBlobHttpRequest(ambryUri, ambryId)
+    val httpReq = deleteBlobHttpRequest(ambryUri, ambryId)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[Boolean]
-    requestsExecutor.executeRequest(httpReq, unmarshalFunc)
+    executeRequest(httpReq, unmarshalFunc)
   }
 
 }

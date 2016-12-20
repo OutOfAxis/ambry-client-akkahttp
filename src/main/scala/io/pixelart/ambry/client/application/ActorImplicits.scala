@@ -5,7 +5,7 @@ import akka.stream.ActorMaterializer
 
 import scala.concurrent.ExecutionContext
 
-trait ActorImplicits {
+private[client] trait ActorImplicits {
   implicit val actorSystem: ActorSystem
   implicit val materializer: ActorMaterializer
   implicit val executionContext: ExecutionContext

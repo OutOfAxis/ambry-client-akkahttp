@@ -3,13 +3,13 @@ package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import io.pixelart.ambry.client.application.ActorImplicits
-import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.AkkaHttpAmbryRequests
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.{ RequestsSuperPoolExecutor, AkkaHttpAmbryRequests }
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.executor.{ Execution, RequestsExecutor }
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.streams.transfers._
 import scala.concurrent.ExecutionContext
 
 //todo: not used
-object FlowHttpClientAmbry {
+private[client] object FlowHttpClientAmbry {
   def apply(requestsEx: RequestsExecutor, httpReqs: AkkaHttpAmbryRequests)(implicit sys: ActorSystem, mat: ActorMaterializer, ec: ExecutionContext): FlowHttpClientAmbry =
 
     new FlowHttpClientAmbry with ActorImplicits with Execution {
@@ -17,13 +17,13 @@ object FlowHttpClientAmbry {
       override implicit val executionContext: ExecutionContext = ec
       override implicit val materializer: ActorMaterializer = mat
 
-      override val requestsExecutor: RequestsExecutor = requestsEx
-      override val httpRequests: AkkaHttpAmbryRequests = httpReqs
     }
 }
 
-trait FlowHttpClientAmbry
-  extends UploadBlobTransfer
+private[client] trait FlowHttpClientAmbry
+  extends RequestsSuperPoolExecutor
+  with AkkaHttpAmbryRequests
+  with UploadBlobTransfer
   with DeleteBlobTransfer
   with GetBlobInfoTransfer
   with GetBlobTransfer
