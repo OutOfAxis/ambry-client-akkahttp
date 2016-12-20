@@ -18,32 +18,32 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
 
   private[client] val ambryUri: AmbryUri
 
-  override def healthCheckRequest: Future[AmbryHealthStatusResponse] = {
+  private[client] override def healthCheckRequest: Future[AmbryHealthStatusResponse] = {
     val httpReq = healthStatusHttpRequest(ambryUri)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryHealthStatusResponse]
     executeRequest(httpReq, unmarshalFunc)
   }
 
-  override def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse] = {
+  private[client] override def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse] = {
     logger.info("Posting file with owner" + uploadData.ownerId.value)
     val httpReq = uploadBlobHttpRequest(ambryUri, uploadData)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobUploadResponse]
     executeRequest(httpReq, unmarshalFunc)
   }
 
-  override def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse] = {
+  private[client] override def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse] = {
     val httpReq = getBlobHttpRequest(ambryUri, ambryId)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
     executeRequest(httpReq, unmarshalFunc)
   }
 
-  override def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse] = {
+  private[client] override def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse] = {
     val httpReq = getBlobInfoHttpRequest(ambryUri, ambryId)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryBlobInfoResponse](fromGetBlobInfoResponse, executionContext, materializer)
     executeRequest(httpReq, unmarshalFunc)
   }
 
-  override def deleteBlobRequest(ambryId: AmbryId): Future[Boolean] = {
+  private[client] override def deleteBlobRequest(ambryId: AmbryId): Future[Boolean] = {
     val httpReq = deleteBlobHttpRequest(ambryUri, ambryId)
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[Boolean]
     executeRequest(httpReq, unmarshalFunc)

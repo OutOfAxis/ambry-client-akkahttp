@@ -13,7 +13,7 @@ import scala.concurrent.Future
 /**
  * Created by rabzu on 11/12/2016.
  */
-trait AmbryService extends AbstractAmbryClientService with StrictLogging with ActorImplicits {
+protected[client] trait AmbryService extends AbstractAmbryClientService with StrictLogging with ActorImplicits {
   this: AmbryClient =>
 
   private[client] val ambryUri: AmbryUri
