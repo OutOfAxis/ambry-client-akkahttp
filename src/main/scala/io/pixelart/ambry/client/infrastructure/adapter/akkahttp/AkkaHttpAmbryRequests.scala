@@ -10,7 +10,7 @@ import io.pixelart.ambry.client.domain.model.httpModel._
 /**
  * Created by rabzu on 11/12/2016.
  */
-trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits {
+protected[client] trait AkkaHttpAmbryRequests extends StrictLogging with ActorImplicits {
 
   private val healthCheckAddress = "healthCheck"
 

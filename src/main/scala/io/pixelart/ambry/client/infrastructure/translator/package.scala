@@ -16,7 +16,7 @@ import org.joda.time.format.DateTimeFormat
  */
 
 //fixme: for some reason akka-http does not recognise AmbryHeaders as Custom headers. its wiered because Spec shows equivalece of the two
-package  object AmbryResponseUnmarshallers extends StrictLogging {
+package object AmbryResponseUnmarshallers extends StrictLogging {
 
   implicit final val fromHealthCheckResponse: FromEntityUnmarshaller[AmbryHealthStatusResponse] =
     PredefinedFromEntityUnmarshallers.stringUnmarshaller.map(AmbryHealthStatusResponse(_))

@@ -9,7 +9,7 @@ import com.github.nscala_time.time.Imports.DateTime
 /**
  * Created by rabzu on 14/12/2016.
  */
- package  object httpModel {
+package object httpModel {
 
   sealed trait AmbryHttpRequestModel
 
