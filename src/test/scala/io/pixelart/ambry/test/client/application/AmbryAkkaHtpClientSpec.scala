@@ -1,8 +1,8 @@
 package io.pixelart.ambry.test.client.application
 
 import com.typesafe.scalalogging.StrictLogging
-import helpers.AkkaSpec
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
+import io.pixelart.ambry.client.application.test.helpers.AkkaSpec
 import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.test.client.model.MockData
 import org.scalatest.concurrent.ScalaFutures

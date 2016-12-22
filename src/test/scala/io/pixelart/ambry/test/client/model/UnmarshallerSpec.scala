@@ -5,7 +5,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.StrictLogging
-import helpers.AkkaSpec
+import io.pixelart.ambry.client.application.test.helpers.AkkaSpec
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model.httpModel._
 import org.scalatest.concurrent.ScalaFutures

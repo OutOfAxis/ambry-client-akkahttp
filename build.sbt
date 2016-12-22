@@ -77,3 +77,13 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 
 parallelExecution in Test := false
 
+publishTo := {
+  val nexus = "http://pixelart.ge:8081/nexus/"
+  if (version.value.trim.endsWith("SNAPSHOT"))
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "content/repositories/releases")
+}
+
+credentials += Credentials("Sonatype Nexus Repository Manager", "pixelart.ge", "admin", "F9bz4Nx3rwul")
+

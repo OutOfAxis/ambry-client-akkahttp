@@ -20,7 +20,7 @@ object MockData {
   /** Mock Response data */
 
   //1.health Check Response data
-  val healthCheck = AmbryHealthStatusResponse(Good)
+  val healthCheck = AmbryHealthStatusResponse("GOOD")
 
   //2.posted blob Response data
   val ambryBlobInfo = AmbryBlobUploadResponse(AmbryId("ambryId"))

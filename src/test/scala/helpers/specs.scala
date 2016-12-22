@@ -1,4 +1,4 @@
-package helpers
+package io.pixelart.ambry.client.application.test.helpers
 
 import java.util.concurrent.TimeUnit
 import akka.actor.{ ActorIdentity, ActorRef, ActorSystem, Identify }
