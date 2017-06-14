@@ -4,7 +4,7 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "1.0.4-SNAPSHOT"
+version := "1.0.6-SNAPSHOT"
 
 organization := "io.outofaxis"
 
@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-core" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http-testkit" % akka_http_Version,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "org.mockito" % "mockito-all" % "1.10.19",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.slf4j" % "log4j-over-slf4j" % "1.7.12",

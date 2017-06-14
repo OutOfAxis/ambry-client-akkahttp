@@ -1,14 +1,12 @@
-package io.pixelart.ambry.test.client.application
+package io.pixelart.ambry.client.application.test
 
 import com.typesafe.scalalogging.StrictLogging
-import helpers.AkkaSpec
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
 import io.pixelart.ambry.client.domain.model.httpModel._
-import io.pixelart.ambry.test.client.model.MockData
 import org.scalatest.concurrent.ScalaFutures
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import MockData._
+import io.pixelart.ambry.client.model.test.MockData._
 
 /**
  * Created by rabzu on 18/12/2016.

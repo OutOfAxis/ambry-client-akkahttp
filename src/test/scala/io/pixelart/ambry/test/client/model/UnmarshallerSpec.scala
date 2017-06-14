@@ -1,18 +1,19 @@
-package io.pixelart.ambry.test.client.model
+package io.pixelart.ambry.client.model.test
 
 import akka.http.scaladsl.model
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.StrictLogging
-import helpers.AkkaSpec
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model.httpModel._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpecLike }
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import MockData._
+import io.pixelart.ambry.client.application.test.AkkaSpec
 
 /**
  * Created by rabzu on 15/12/2016.
