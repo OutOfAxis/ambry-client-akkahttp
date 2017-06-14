@@ -31,4 +31,16 @@ trait RequestsSuperPoolExecutor extends RequestsExecutor with AkkaHttpAmbryRespo
           throw new AmbryHttpConnectionException(e.getMessage, nestedException = e)
         }
       }
+
+  protected[akkahttp] def executeRequestSource[T](httpReq: HttpRequest, unmarshalFunc: HttpResponse => Future[T]) =
+    Source
+      .single((httpReq, ()))
+      .viaMat(poolFlow)(Keep.right)
+      .map(_._1)
+      .mapAsync(1) {
+        t =>
+          logger.info(t.toString)
+          handleHttpResponse(t, unmarshalFunc)
+      }
+
 }
