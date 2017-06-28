@@ -1,4 +1,4 @@
-package io.pixelart.ambry.test.client.model
+package io.pixelart.ambry.client.model.test
 
 import java.nio.file.{ Files, Paths }
 
