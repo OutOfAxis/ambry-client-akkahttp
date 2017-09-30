@@ -2,19 +2,17 @@ package io.pixelart.ambry.client.application.test
 
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
-import io.pixelart.ambry.client.application.test.helpers.AkkaSpec
 import io.pixelart.ambry.client.domain.model.httpModel._
+import io.pixelart.ambry.client.model.test.MockData._
 import org.scalatest.concurrent.ScalaFutures
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import io.pixelart.ambry.client.model.test.MockData._
 
 /**
  * Created by rabzu on 18/12/2016.
  */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
-
-  import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel
 
   val client = new AmbryAkkaHttpClient("http://pixelart.ge")
   var ambryId: Option[AmbryId] = None

@@ -4,7 +4,7 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "1.0.8-SNAPSHOT"
+version := "1.0.9-SNAPSHOT"
 
 organization := "io.outofaxis"
 
@@ -12,26 +12,28 @@ scalaVersion := "2.11.11"
 
 val scalaTestVersion = "3.0.1"
 
-val akkaVersion = "2.5.3"
+val akkaVersion = "2.5.6"
 
-val akka_http_Version = "10.0.9"
+val akka_http_Version = "10.0.10"
 
 
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
+  "com.typesafe.akka" %% "akka-agent" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
   "com.typesafe.akka" %% "akka-http-core" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http-testkit" % akka_http_Version,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "org.mockito" % "mockito-all" % "1.10.19",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.slf4j" % "log4j-over-slf4j" % "1.7.12",
   "ch.qos.logback" % "logback-classic" % "1.1.7",
   "ch.qos.logback" % "logback-core" % "1.1.7",
   "com.github.nscala-time" %% "nscala-time" % "2.14.0",
-  "org.mockito" % "mockito-all" % "1.10.19",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
   "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
