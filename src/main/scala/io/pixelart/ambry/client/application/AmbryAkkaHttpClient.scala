@@ -18,7 +18,7 @@ class AmbryAkkaHttpClient(host: String, port: Int = 1174)(implicit val actorSyst
     with AkkaHttpAmbryRequests
     with AmbryService {
 
-  private[client] override val ambryUri: AmbryUri = AmbryUri(host + ":" + port.toString)
+  private[client] override val ambryUri: AmbryUri = AmbryUri("http://" + host + ":" + port.toString)
 
   val client = new RequestsPoolExecutor(host, port)
 
