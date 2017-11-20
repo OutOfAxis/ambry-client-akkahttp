@@ -14,11 +14,10 @@ import scala.language.postfixOps
  */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
-  val client = new AmbryAkkaHttpClient("http://pixelart.ge")
+  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge")
   var ambryId: Option[AmbryId] = None
 
   "Ambry service" should {
-
     "1. return  HealthCheck Good from real Ambry server" in {
       val healthCheckFuture = client.healthCheck
 
@@ -46,7 +45,10 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
         r shouldEqual true
       }
     }
-
   }
+
+
+
+
 
 }
