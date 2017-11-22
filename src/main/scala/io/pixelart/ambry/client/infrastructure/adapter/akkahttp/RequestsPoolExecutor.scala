@@ -14,7 +14,6 @@ class RequestsPoolExecutor(host: String, port: Int = 1174)(implicit val actorSys
     extends AkkaHttpAmbryResponseHandler
     with StrictLogging {
 
-
   private lazy val poolFlow = Http().cachedHostConnectionPool[Promise[HttpResponse]](host.split("http[s]?://").tail.head, port)
 
   private val queueSize = 50
