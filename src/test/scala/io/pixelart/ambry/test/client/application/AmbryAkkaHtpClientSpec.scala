@@ -1,5 +1,7 @@
 package io.pixelart.ambry.client.application.test
 
+import akka.stream.testkit.javadsl.TestSink
+import akka.util.ByteString
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
 import io.pixelart.ambry.client.domain.model.httpModel._
@@ -27,23 +29,34 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
     }
 
     "2. should upload file" in {
-      val uploadRequest = client.postFile(uploadData)
-      whenReady(uploadRequest, timeout(10 seconds)) { r =>
+      val request = client.postFile(uploadData)
+      whenReady(request, timeout(10 seconds)) { r =>
         ambryId = Some(r.ambryId)
         logger.info(r.ambryId.value)
       }
     }
-    "3. should get file" in {
-      val uploadRequest = client.getFileProperty(ambryId.get)
-      whenReady(uploadRequest, timeout(10 seconds)) { r =>
+    "3. should get file prop" in {
+      val request = client.getFileProperty(ambryId.get)
+      whenReady(request, timeout(10 seconds)) { r =>
         r.serviceId.value shouldEqual "ServiceId"
       }
     }
-    "4. delete fine in ambyr" in {
-      val uploadRequest = client.deleteFile(ambryId.get)
-      whenReady(uploadRequest, timeout(10 seconds)) { r =>
+    "4.should get file " in {
+      val request = client.getFile(ambryId.get)
+      whenReady(request, timeout(10 seconds)) { r =>
+        logger.info(r.blobSize.toString)
+
+      }
+
+    }
+
+    "5. delete fine in ambyr" in {
+      val request = client.deleteFile(ambryId.get)
+      whenReady(request, timeout(10 seconds)) { r =>
         r shouldEqual true
       }
     }
+
+
   }
 }
