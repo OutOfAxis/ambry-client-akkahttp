@@ -1,7 +1,7 @@
 package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{ByteRange, RawHeader}
+import akka.http.scaladsl.model.headers.{ ByteRange, RawHeader }
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.ActorImplicits
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
@@ -52,9 +52,8 @@ protected[client] trait AkkaHttpAmbryRequests extends StrictLogging with ActorIm
   }
 
   protected[client] def getBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
-      HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET)
-        .addHeader(Range(ByteRange(0,1024)))
-
+    HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET)
+      .addHeader(Range(ByteRange(0, 1024)))
 
   protected[client] def getBlobInfoHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}/BlobInfo", method = HttpMethods.GET)
