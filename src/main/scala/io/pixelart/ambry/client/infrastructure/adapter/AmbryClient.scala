@@ -1,5 +1,7 @@
 package io.pixelart.ambry.client.infrastructure.adapter
 
+import akka.NotUsed
+import akka.stream.scaladsl.Source
 import io.pixelart.ambry.client.domain.model._
 import io.pixelart.ambry.client.domain.model.httpModel._
 
@@ -17,6 +19,8 @@ private[client] trait AmbryClient {
   private[client] def uploadBlobRequest(uploadData: UploadBlobRequestData): Future[AmbryBlobUploadResponse]
 
   private[client] def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse]
+
+  private[client] def getBlobRequestStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]]
 
   private[client] def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse]
 

@@ -22,8 +22,10 @@ class RequestsPoolExecutor(host: String, port: Int = 1174)(implicit val actorSys
     .via(poolFlow)
     .toMat(
       Sink.foreach({
-        case ((Success(resp), p)) => p.success(resp)
-        case ((Failure(e), p))    => p.failure(e)
+        case ((Success(resp), p)) =>
+          logger.debug(resp.toString())
+          p.success(resp)
+        case ((Failure(e), p)) => p.failure(e)
       })
     )(Keep.left)
     .run()

@@ -1,19 +1,23 @@
 package io.pixelart.ambry.client.application.test
 
-import akka.stream.testkit.javadsl.TestSink
+import akka.http.scaladsl.model.ContentRange
+import akka.http.scaladsl.model.ContentRange.Default
 import akka.util.ByteString
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
 import io.pixelart.ambry.client.domain.model.httpModel._
-import io.pixelart.ambry.client.model.test.MockData._
+import io.pixelart.ambry.client.model.test.MockData.{source, _}
 import org.scalatest.concurrent.ScalaFutures
+import akka.http.scaladsl.testkit.RouteTestTimeout
+import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.testkit.scaladsl.TestSink
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 /**
- * Created by rabzu on 18/12/2016.
- */
+  * Created by rabzu on 18/12/2016.
+  */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
   val client = new AmbryAkkaHttpClient("http://b.pixelart.ge")
@@ -45,12 +49,43 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       val request = client.getFile(ambryId.get)
       whenReady(request, timeout(10 seconds)) { r =>
         logger.info(r.blobSize.toString)
-
       }
-
     }
 
-    "5. delete fine in ambyr" in {
+    "5.should get stream file " in {
+      val sourceF = for {
+        source <- client.getBlobRequestStreamed(ambryId.get)
+      } yield source
+
+      whenReady(sourceF, timeout(20 seconds)) { source =>
+        val sumF = source.map { resp =>
+          resp.contentRange.get match {
+            case Default(f, s, _) => s - f
+            case _ => 21412321
+          }
+        }
+          .runWith(Sink.fold(0.toLong)(_ + _))
+
+        //          .runWith(TestSink.probe[ContentRange])
+        //          .request(1)
+        //          .expectNextPF{
+        //            case Default(f,s, Some(l)) =>
+        //              f shouldEqual 0
+        //              s shouldEqual 99999
+        //              l shouldEqual testFileSize
+        //          }
+
+
+        whenReady(sumF, timeout(20 seconds)) { sum =>
+          sum shouldEqual testFileSize
+
+        }
+
+      }
+    }
+
+
+    "6. delete fine in ambyr" in {
       val request = client.deleteFile(ambryId.get)
       whenReady(request, timeout(10 seconds)) { r =>
         r shouldEqual true

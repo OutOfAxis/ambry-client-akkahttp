@@ -1,10 +1,12 @@
 package io.pixelart.ambry.client.domain.model
 
 import java.util.NoSuchElementException
-import akka.http.scaladsl.model.{ Uri, ContentType }
+
+import akka.http.scaladsl.model.{ ContentRange, ContentType, Uri }
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.github.nscala_time.time.Imports.DateTime
+import akka.http.scaladsl.model.headers.{ Expires, Location, `Content-Length`, `Content-Range` }
 
 /**
  * Created by rabzu on 14/12/2016.
@@ -81,7 +83,8 @@ package object httpModel {
     blob: Source[ByteString, Any],
     blobSize: Long,
     contentType: ContentType,
-    expires: DateTime
+    expires: DateTime,
+    contentRange: Option[ContentRange] = None
   ) extends AmbryHttpResponseModel
 
   /**

@@ -1,13 +1,16 @@
 package io.pixelart.ambry.client.infrastructure.service
 
 import java.nio.file.{ Files, Path }
+
+import akka.NotUsed
 import akka.http.scaladsl.model.ContentType
 import akka.stream.IOResult
-import akka.stream.scaladsl.{ Source, FileIO }
+import akka.stream.scaladsl.{ FileIO, Source }
 import com.typesafe.scalalogging.StrictLogging
-import io.pixelart.ambry.client.application.{ ActorImplicits, AbstractAmbryClientService }
+import io.pixelart.ambry.client.application.{ AbstractAmbryClientService, ActorImplicits }
 import io.pixelart.ambry.client.domain.model.httpModel._
-import io.pixelart.ambry.client.infrastructure.adapter.{ AmbryClient }
+import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
+
 import scala.concurrent.Future
 
 /**
@@ -28,6 +31,9 @@ protected[client] trait AmbryService extends AbstractAmbryClientService with Str
 
   override def getFile(ambryId: AmbryId): Future[AmbryGetBlobResponse] =
     getBlobRequest(ambryId)
+
+  override def getFileAsStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]] =
+    getBlobRequestStreamed(ambryId, chunkSize)
 
   override def getFile(ambryId: AmbryId, localPath: Path): Future[IOResult] =
     getBlobRequest(ambryId)

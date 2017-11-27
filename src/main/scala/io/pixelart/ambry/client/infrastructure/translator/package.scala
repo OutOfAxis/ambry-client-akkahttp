@@ -1,8 +1,8 @@
 package io.pixelart.ambry.client.infrastructure.translator
 
-import akka.http.javadsl.model.headers.LastModified
-import akka.http.scaladsl.model.{ HttpHeader, StatusCodes, HttpResponse }
-import akka.http.scaladsl.model.headers.{ Expires, Location }
+import akka.http.javadsl.model.headers.{ ContentLength, LastModified }
+import akka.http.scaladsl.model.{ HttpHeader, HttpResponse, StatusCodes }
+import akka.http.scaladsl.model.headers.{ Expires, Location, `Content-Length`, `Content-Range` }
 import akka.http.scaladsl.unmarshalling._
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
@@ -61,7 +61,20 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
         .getOrElse(throw new NoSuchElementException("header not found: Expires"))
 
       val e = new DateTime(expiresHeader.date.clicks)
-      AmbryGetBlobResponse(response.entity.dataBytes, sizeHeader.toLong, response.entity.contentType, e)
+
+      //      val contentLengthOption = response
+      //        .headers
+      //        .collectFirst {
+      //          case h: ContentLength => h.length
+      //        }
+
+      val contentRangeOption = response
+        .headers
+        .collectFirst {
+          case h: `Content-Range` => h.contentRange
+        }
+
+      AmbryGetBlobResponse(response.entity.dataBytes, sizeHeader.toLong, response.entity.contentType, e, contentRangeOption)
     }
     Unmarshaller.strict(unmarshal)
   }

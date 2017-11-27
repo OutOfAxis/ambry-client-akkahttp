@@ -5,9 +5,13 @@ package io.pixelart.ambry.client.application
  */
 
 import java.nio.file.Path
+
+import akka.NotUsed
 import akka.http.scaladsl.model.ContentType
 import akka.stream.IOResult
+import akka.stream.scaladsl.Source
 import io.pixelart.ambry.client.domain.model.httpModel._
+
 import scala.concurrent.Future
 
 trait AbstractAmbryClientService {
@@ -38,6 +42,14 @@ trait AbstractAmbryClientService {
    * @return the file object
    */
   def getFile(ambryId: AmbryId): Future[AmbryGetBlobResponse]
+
+  /**
+   * Get the file with the given resource id
+   * in chunks
+   * @param ambryId the file's ambryId
+   * @return the file object
+   */
+  def getFileAsStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]]
 
   /**
    * Get the file with given resource id, and put into the local file object.

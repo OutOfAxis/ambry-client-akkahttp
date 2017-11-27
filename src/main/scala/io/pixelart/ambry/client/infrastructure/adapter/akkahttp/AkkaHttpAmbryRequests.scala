@@ -41,19 +41,30 @@ protected[client] trait AkkaHttpAmbryRequests extends StrictLogging with ActorIm
       RawHeader(ownerIdHeader.name(), ownerIdHeader.value)
     )
 
-    val r = HttpRequest(
+    HttpRequest(
       uri = s"${ambryUri.uri}/",
       method = HttpMethods.POST,
       entity = HttpEntity.Default(uploadBlobData.contentType, uploadBlobData.size, uploadBlobData.blobSource)
     ).withHeaders(headersList)
-    logger.info(r.toString())
-    r
 
   }
 
   protected[client] def getBlobHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET)
-      .addHeader(Range(ByteRange(0, 1024)))
+
+  protected[client] def getBlobHttpRequestWithRange(ambryUri: AmbryUri, ambryId: AmbryId, start: Option[Long], finish: Option[Long]): HttpRequest = {
+    (start, finish) match {
+      case (Some(s), Some(f)) =>
+        HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET).addHeader(Range(ByteRange(s, f)))
+      case (Some(s), None) =>
+        HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET).addHeader(Range(ByteRange.fromOffset(s)))
+      case (None, Some(f)) =>
+        HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET).addHeader(Range(ByteRange.suffix(f)))
+      case (None, None) =>
+        HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}", method = HttpMethods.GET)
+
+    }
+  }
 
   protected[client] def getBlobInfoHttpRequest(ambryUri: AmbryUri, ambryId: AmbryId): HttpRequest =
     HttpRequest(uri = s"${ambryUri.uri}/${ambryId.value}/BlobInfo", method = HttpMethods.GET)
