@@ -53,34 +53,13 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
     }
 
     "5.should get stream file " in {
-      val sourceF = for {
-        source <- client.getBlobRequestStreamed(ambryId.get)
-      } yield source
+      val bsF = for {
+        resp <- client.getBlobRequestStreamed(ambryId.get)
+        bs <-resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
+      } yield bs
 
-      whenReady(sourceF, timeout(20 seconds)) { source =>
-        val sumF = source.map { resp =>
-          resp.contentRange.get match {
-            case Default(f, s, _) => s - f
-            case _ => 21412321
-          }
-        }
-          .runWith(Sink.fold(0.toLong)(_ + _))
-
-        //          .runWith(TestSink.probe[ContentRange])
-        //          .request(1)
-        //          .expectNextPF{
-        //            case Default(f,s, Some(l)) =>
-        //              f shouldEqual 0
-        //              s shouldEqual 99999
-        //              l shouldEqual testFileSize
-        //          }
-
-
-        whenReady(sumF, timeout(20 seconds)) { sum =>
-          sum shouldEqual testFileSize
-
-        }
-
+      whenReady(bsF, timeout(20 seconds)) {  bs =>
+           bs.size shouldEqual testFileSize
       }
     }
 

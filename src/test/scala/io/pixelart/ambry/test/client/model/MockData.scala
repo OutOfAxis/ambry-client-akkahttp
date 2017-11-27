@@ -1,15 +1,16 @@
 package io.pixelart.ambry.client.model.test
 
-import java.nio.file.{ Files, Paths }
+import java.nio.file.{Files, Paths}
 
-import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.model.{ MediaTypes, ContentType, ContentTypes }
-import akka.stream.scaladsl.{ FileIO, Source }
+import akka.http.scaladsl.model.headers.{RawHeader, `Content-Type`}
+import akka.http.scaladsl.model.{ContentType, ContentTypes, MediaTypes}
+import akka.stream.scaladsl.{FileIO, Source}
 import akka.util.ByteString
 import com.github.nscala_time.time.Imports._
 import com.typesafe.config.ConfigFactory
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model._
+
 import scala.collection.mutable.ListBuffer
 import io.pixelart.ambry.client.domain.model.httpModel._
 /**
@@ -40,7 +41,7 @@ object MockData {
     serviceIdHeader.id,
     creationTimeHeader.date.toString,
     privateHeader.prvt,
-    contentTypeHeader.contentType,
+    `Content-Type`.parseFromValueString(contentTypeHeader.contentType).right.get.contentType,
     Some((nowMillis.getMillis * 0.001).toLong),
     Some(ownerIdHeader.ownerId)
   )
@@ -62,7 +63,7 @@ object MockData {
   val foldedBS = TestByteStrings.fold(ByteString.empty) { (acc, in) ⇒ acc ++ in }
 
   val expires = DateTime.now
-  val getBlobResponse = AmbryGetBlobResponse(Source(TestByteStrings), foldedBS.size.toLong, ContentTypes.`text/xml(UTF-8)`, expires)
+  val getBlobResponse = AmbryGetBlobResponse(Source(TestByteStrings), foldedBS.size.toLong, ContentTypes.`text/xml(UTF-8)`)
 
   val serviceId = AmbryServiceId("ServiceId")
   val ownerId = AmbryOwnerId("OwnerId")

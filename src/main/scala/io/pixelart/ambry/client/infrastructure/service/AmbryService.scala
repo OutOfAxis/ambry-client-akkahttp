@@ -32,7 +32,7 @@ protected[client] trait AmbryService extends AbstractAmbryClientService with Str
   override def getFile(ambryId: AmbryId): Future[AmbryGetBlobResponse] =
     getBlobRequest(ambryId)
 
-  override def getStreamedFile(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]] =
+  override def getStreamedFile(ambryId: AmbryId, chunkSize: Long = 100000): Future[AmbryGetBlobResponse] =
     getBlobRequestStreamed(ambryId, chunkSize)
 
   override def getFile(ambryId: AmbryId, localPath: Path): Future[IOResult] =

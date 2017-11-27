@@ -74,7 +74,7 @@ package object httpModel {
     serviceId: AmbryServiceId,
     creationTime: String,
     isPrivate: Boolean,
-    ambryContentType: String,
+    contentType: ContentType,
     ttl: Option[Long] = Some(-1),
     ownerId: Option[AmbryOwnerId]
   ) extends AmbryHttpResponseModel
@@ -83,7 +83,6 @@ package object httpModel {
     blob: Source[ByteString, Any],
     blobSize: Long,
     contentType: ContentType,
-    expires: DateTime,
     contentRange: Option[ContentRange] = None
   ) extends AmbryHttpResponseModel
 

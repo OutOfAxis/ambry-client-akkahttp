@@ -2,7 +2,7 @@ package io.pixelart.ambry.client.infrastructure.translator
 
 import akka.http.javadsl.model.headers.{ ContentLength, LastModified }
 import akka.http.scaladsl.model.{ HttpHeader, HttpResponse, StatusCodes }
-import akka.http.scaladsl.model.headers.{ Expires, Location, `Content-Length`, `Content-Range` }
+import akka.http.scaladsl.model.headers.{ Expires, Location, `Content-Length`, `Content-Range`, `Content-Type` }
 import akka.http.scaladsl.unmarshalling._
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
@@ -55,12 +55,12 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
         }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryBlobSizeHeader.name}"))
 
-      val expiresHeader = response
-        .headers
-        .collectFirst { case h: Expires => h }
-        .getOrElse(throw new NoSuchElementException("header not found: Expires"))
+//      val expiresHeader = response
+//        .headers
+//        .collectFirst { case h: Expires => h }
+//        .getOrElse(throw new NoSuchElementException("header not found: Expires"))
 
-      val e = new DateTime(expiresHeader.date.clicks)
+//      val e = new DateTime(expiresHeader.date.clicks)
 
       //      val contentLengthOption = response
       //        .headers
@@ -74,7 +74,7 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
           case h: `Content-Range` => h.contentRange
         }
 
-      AmbryGetBlobResponse(response.entity.dataBytes, sizeHeader.toLong, response.entity.contentType, e, contentRangeOption)
+      AmbryGetBlobResponse(response.entity.dataBytes, sizeHeader.toLong, response.entity.contentType, contentRangeOption)
     }
     Unmarshaller.strict(unmarshal)
   }
@@ -108,7 +108,7 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
 
       val contentTypeHeader = response
         .headers
-        .collectFirst { case HttpHeader(AmbryContentTypeHeader.name, value) => value }
+        .collectFirst { case HttpHeader(AmbryContentTypeHeader.name, value) =>  `Content-Type`.parseFromValueString(value).right.get.contentType }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryContentTypeHeader.name}"))
 
       val ttlHeader = response

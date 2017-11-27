@@ -20,7 +20,7 @@ private[client] trait AmbryClient {
 
   private[client] def getBlobRequest(ambryId: AmbryId): Future[AmbryGetBlobResponse]
 
-  private[client] def getBlobRequestStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]]
+  private[client] def getBlobRequestStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[AmbryGetBlobResponse]
 
   private[client] def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse]
 
