@@ -4,7 +4,7 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "1.0.14-SNAPSHOT"
+version := "0.0.15-SNAPSHOT"
 
 organization := "io.outofaxis"
 
