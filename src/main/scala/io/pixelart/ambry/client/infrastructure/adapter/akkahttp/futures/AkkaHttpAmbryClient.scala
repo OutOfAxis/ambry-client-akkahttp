@@ -1,14 +1,14 @@
 package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.futures
 
 import akka.NotUsed
-import akka.http.scaladsl.model.{HttpResponse, MediaTypes}
-import akka.http.scaladsl.server.ContentNegotiator.Alternative.{ContentType, MediaType}
+import akka.http.scaladsl.model.{ HttpResponse, MediaTypes }
+import akka.http.scaladsl.server.ContentNegotiator.Alternative.{ ContentType, MediaType }
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
-import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.{AkkaHttpAmbryRequests, RequestsPoolExecutor}
+import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.{ AkkaHttpAmbryRequests, RequestsPoolExecutor }
 
 import scala.concurrent.Future
 import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
@@ -56,14 +56,13 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
       })
       val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
 
-      val mergedBlobSource = source.mapAsync(5)(client.executeRequest(_, unmarshalFunc)).flatMapConcat{ response =>
+      val mergedBlobSource = source.mapAsync(5)(client.executeRequest(_, unmarshalFunc)).flatMapConcat { response =>
         response.blob
       }
       AmbryGetBlobResponse(mergedBlobSource, info.blobSize, info.contentType)
     }
 
   }
-
 
   private[client] override def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse] = {
     val httpReq = getBlobInfoHttpRequest(ambryUri, ambryId)

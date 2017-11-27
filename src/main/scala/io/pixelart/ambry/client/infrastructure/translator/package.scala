@@ -55,12 +55,12 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
         }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryBlobSizeHeader.name}"))
 
-//      val expiresHeader = response
-//        .headers
-//        .collectFirst { case h: Expires => h }
-//        .getOrElse(throw new NoSuchElementException("header not found: Expires"))
+      //      val expiresHeader = response
+      //        .headers
+      //        .collectFirst { case h: Expires => h }
+      //        .getOrElse(throw new NoSuchElementException("header not found: Expires"))
 
-//      val e = new DateTime(expiresHeader.date.clicks)
+      //      val e = new DateTime(expiresHeader.date.clicks)
 
       //      val contentLengthOption = response
       //        .headers
@@ -108,7 +108,7 @@ package object AmbryResponseUnmarshallers extends StrictLogging {
 
       val contentTypeHeader = response
         .headers
-        .collectFirst { case HttpHeader(AmbryContentTypeHeader.name, value) =>  `Content-Type`.parseFromValueString(value).right.get.contentType }
+        .collectFirst { case HttpHeader(AmbryContentTypeHeader.name, value) => `Content-Type`.parseFromValueString(value).right.get.contentType }
         .getOrElse(throw new NoSuchElementException(s"header not found: ${AmbryContentTypeHeader.name}"))
 
       val ttlHeader = response
