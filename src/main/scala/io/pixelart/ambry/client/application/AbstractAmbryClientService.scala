@@ -49,7 +49,7 @@ trait AbstractAmbryClientService {
    * @param ambryId the file's ambryId
    * @return the file object
    */
-  def getFileAsStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]]
+  def getStreamedFile(ambryId: AmbryId, chunkSize: Long = 100000): Future[Source[AmbryGetBlobResponse, NotUsed]]
 
   /**
    * Get the file with given resource id, and put into the local file object.
