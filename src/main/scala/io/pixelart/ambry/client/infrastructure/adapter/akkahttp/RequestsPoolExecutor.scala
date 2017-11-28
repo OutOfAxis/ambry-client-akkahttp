@@ -49,7 +49,6 @@ class RequestsPoolExecutor(host: String, port: Int = 1174)(implicit val actorSys
       throw new AmbryHttpConnectionException(e.getMessage, nestedException = e)
     //    case e: NoSuchElementException =>
 
-
   }
 
 }

@@ -22,12 +22,12 @@ private[client] trait AkkaHttpAmbryResponseHandler extends StrictLogging {
           }
       case response @ HttpResponse(StatusCodes.PartialContent, _, _, _) =>
         unmarshal(response)
-//      case response @ HttpResponse(StatusCodes.OK, _, _, _) =>
-//        unmarshal(response)
-//          .recover {
-//            case e =>
-//              throw new AmbryHttpBadRequestException(e.getMessage)
-//          }
+      //      case response @ HttpResponse(StatusCodes.OK, _, _, _) =>
+      //        unmarshal(response)
+      //          .recover {
+      //            case e =>
+      //              throw new AmbryHttpBadRequestException(e.getMessage)
+      //          }
       case response @ HttpResponse(StatusCodes.Created, _, _, _) =>
         unmarshal(response).recover {
           case e => throw new AmbryHttpBadRequestException(e.getMessage)
@@ -37,7 +37,7 @@ private[client] trait AkkaHttpAmbryResponseHandler extends StrictLogging {
           case e => throw new AmbryHttpBadRequestException(e.getMessage)
         }
       case response @ HttpResponse(StatusCodes.Unauthorized, _, _, _) =>
-         Future.failed(new AmbryHttpAuthorisationException)
+        Future.failed(new AmbryHttpAuthorisationException)
 
       case response @ HttpResponse(StatusCodes.NotFound, h, msg, _) =>
         Future.failed(new AmbryHttpFileNotFoundException)
