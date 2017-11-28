@@ -13,22 +13,33 @@ import scala.util.{ Failure, Success }
 class RequestsPoolExecutor(host: String, port: Int = 1174)(implicit val actorSystem: ActorSystem, val executionContext: ExecutionContext, val materializer: ActorMaterializer)
     extends AkkaHttpAmbryResponseHandler
     with StrictLogging {
-
+//todo: Move everythign to Akka URI
   private lazy val poolFlow = Http().cachedHostConnectionPool[Promise[HttpResponse]](host.split("http[s]?://").tail.head, port)
 
-  private val queueSize = 50
+  private lazy val queueSize = 50
 
-  val queueSource = Source.queue[(HttpRequest, Promise[HttpResponse])](queueSize, OverflowStrategy.backpressure)
+  private lazy val (queueSource, poolFuture) = Source.queue[(HttpRequest, Promise[HttpResponse])](queueSize, OverflowStrategy.backpressure)
     .via(poolFlow)
     .toMat(
       Sink.foreach({
         case ((Success(resp), p)) =>
-          logger.debug(resp.toString())
+          logger.trace("ambry/request/success/message={}", resp.toString())
           p.success(resp)
         case ((Failure(e), p)) => p.failure(e)
       })
-    )(Keep.left)
+    )(Keep.both)
     .run()
+
+
+  poolFuture.onComplete{
+      case Success(_) =>
+        logger.debug("ambry/connection/pool/success/closed ")
+      case Failure(e) =>
+        logger.warn("ambry/request/failure/message={}", e.getMessage)
+        e.printStackTrace()
+    }
+
+
 
   protected[akkahttp] def executeRequest[T](httpRequest: HttpRequest, unmarshal: HttpResponse => Future[T]): Future[T] = {
 

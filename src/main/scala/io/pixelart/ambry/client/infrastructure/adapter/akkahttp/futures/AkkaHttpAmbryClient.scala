@@ -51,7 +51,6 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
       val r = l.drop(1).map(_.map(_ - 1)) ::: List(None)
       val ranges = l.zip(r)
       val source = Source(ranges.map { tuple =>
-        logger.debug("tuple {} / {}", tuple, info.blobSize.toString)
         getBlobHttpRequestWithRange(ambryUri, ambryId, tuple._1, tuple._2)
       })
       val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
