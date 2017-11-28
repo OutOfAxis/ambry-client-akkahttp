@@ -44,7 +44,7 @@ protected[client] trait AkkaHttpAmbryRequests extends StrictLogging with ActorIm
     HttpRequest(
       uri = s"${ambryUri.uri}/",
       method = HttpMethods.POST,
-      entity = HttpEntity.Default(uploadBlobData.contentType, uploadBlobData.size, uploadBlobData.blobSource)
+      entity = HttpEntity.Chunked.fromData(uploadBlobData.contentType, uploadBlobData.blobSource).withoutSizeLimit()
     ).withHeaders(headersList)
 
   }
