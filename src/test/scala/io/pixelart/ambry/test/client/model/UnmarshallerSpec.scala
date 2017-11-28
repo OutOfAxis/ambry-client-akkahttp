@@ -8,11 +8,11 @@ import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.AmbryHttpHeaderModel._
 import io.pixelart.ambry.client.domain.model.httpModel._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpecLike }
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import MockData._
+import akka.http.javadsl.model.headers.ContentLength
 import io.pixelart.ambry.client.application.test.AkkaSpec
 
 /**
@@ -75,6 +75,12 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Stri
     entity = HttpEntity.Chunked.fromData(ContentTypes.`text/xml(UTF-8)`, Source(TestByteStrings))
   )
 
+  val getBlobHttpResponseStreamed = HttpResponse(
+    status = StatusCodes.OK,
+    headers = List(AmbryBlobSizeHeader(foldedBS.size.toString), expiresHeader, `Content-Length`(213)),
+    entity = HttpEntity.Chunked.fromData(ContentTypes.`text/xml(UTF-8)`, Source(TestByteStrings))
+  )
+
   logger.info(getBlobInfoHttpResponse.toString())
 
   "Unmarshaler" should {
@@ -124,5 +130,17 @@ class UnmarshallerSpec extends AkkaSpec("unmarshal") with ScalaFutures with Stri
         //todo test source equality
       }
     }
+//
+//      "7. unmarshal Get Stream Blob HttpResponse as  AmbryBlobResponse" in {
+//      val result = Unmarshal(getBlobHttpResponseStreamed).to[AmbryGetBlobResponse]
+//      whenReady(result, timeout(10 seconds)) { r =>
+//        r. shouldEqual getBlobHttpResponseStreamed.headers.collectFirst{case h: ContentLength => h.length}
+//        //todo test source equality
+//      }
+//    }
+
+
+
+
   }
 }
