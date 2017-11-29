@@ -1,10 +1,6 @@
 package io.pixelart.ambry.client.domain.model
 
-import io.pixelart.ambry.client.domain.model.httpModel.AmbryId
-
 sealed trait AmbryHttpException extends Exception
-
-final case class AmbryHttpResponseException(message: String) extends AmbryHttpException
 
 final case class AmbryHttpAuthorisationException(message: String = "error.Authorisation") extends AmbryHttpException
 
