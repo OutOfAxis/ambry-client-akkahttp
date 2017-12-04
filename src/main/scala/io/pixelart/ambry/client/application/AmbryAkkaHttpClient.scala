@@ -21,7 +21,7 @@ class AmbryAkkaHttpClient(host: String, port: Int = 1174, connectionPoolSettings
 
   private[client] override val ambryUri: AmbryUri = AmbryUri(host + ":" + port.toString)
 
-  val client = new RequestsPoolExecutor(host, port, connectionPoolSettings,clientQueuePoolSize)
+  val client = new RequestsPoolExecutor(host, port, connectionPoolSettings, clientQueuePoolSize)
 
 }
 

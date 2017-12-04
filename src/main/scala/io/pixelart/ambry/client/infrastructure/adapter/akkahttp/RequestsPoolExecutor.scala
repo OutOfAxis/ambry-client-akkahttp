@@ -21,7 +21,7 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
 
     Http().cachedHostConnectionPool[Promise[HttpResponse]](host.split("http[s]?://").tail.head, port, connectionPoolSettings)
 
-//  private lazy val queueSize = 50
+  //  private lazy val queueSize = 50
 
   private val (queueSource, connectionPool) = Source.queue[(HttpRequest, Promise[HttpResponse])](queueSize, OverflowStrategy.backpressure)
     .viaMat(poolFlow)(Keep.both)
