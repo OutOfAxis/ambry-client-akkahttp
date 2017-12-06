@@ -23,7 +23,7 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
 
   //  private lazy val queueSize = 50
 
-  private val (queueSource, connectionPool) = Source.queue[(HttpRequest, Promise[HttpResponse])](queueSize, OverflowStrategy.backpressure)
+  private val (queueSource, connectionPool) = Source.queue[(HttpRequest, Promise[HttpResponse])](queueSize, OverflowStrategy.backpressure).async
     .viaMat(poolFlow)(Keep.both)
     .toMat(
       Sink.foreach({
