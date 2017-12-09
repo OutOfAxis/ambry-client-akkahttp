@@ -1,10 +1,11 @@
 package io.pixelart.ambry.client.application.test
 
+import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
-import io.pixelart.ambry.client.domain.model.AmbryHttpFileNotFoundException
+import io.pixelart.ambry.client.domain.model.{AmbryHttpBadRequestException, AmbryHttpFileNotFoundException}
 import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.model.test.MockData._
 import org.scalatest.concurrent.ScalaFutures
@@ -17,7 +18,7 @@ import scala.language.postfixOps
   */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
-  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge")
+  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge",connectionPoolSettings = ConnectionPoolSettings(system))
   var ambryId: Option[AmbryId] = None
 
   "Ambry service" should {
@@ -69,11 +70,21 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
 
-    "7. get non existant file " in {
-      val request = client.getFile(ambryId.get)
+      "7. get non existant file " in {
+        val request = client.getFile(ambryId.get)
+        whenReady(request.failed, timeout(10 seconds)) {
+          case e:AmbryHttpFileNotFoundException =>
+            true shouldEqual true
+
+        }
+    }
+
+
+    "8. get non existant file " in {
+      val request = client.getFile(AmbryId("fake_Id"))
       whenReady(request.failed, timeout(10 seconds)) {
-        case e:AmbryHttpFileNotFoundException =>
-        true shouldEqual true
+        case e:AmbryHttpBadRequestException =>
+          true shouldEqual true
 
       }
     }

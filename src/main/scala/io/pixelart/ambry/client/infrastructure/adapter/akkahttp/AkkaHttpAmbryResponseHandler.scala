@@ -45,6 +45,9 @@ private[client] trait AkkaHttpAmbryResponseHandler extends StrictLogging {
       case response @ HttpResponse(StatusCodes.ProxyAuthenticationRequired, h, msg, _) =>
         Future.failed(new AmbryHttpBadRequestException)
 
+      case response @ HttpResponse(StatusCodes.BadRequest, h, msg, _) =>
+        Future.failed(new AmbryHttpBadRequestException)
+
       case response @ HttpResponse(StatusCodes.Gone, h, msg, _) =>
         Future.failed(new AmbryHttpFileNotFoundException)
 
