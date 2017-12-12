@@ -1,14 +1,16 @@
 package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
+import akka.Done
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ HttpRequest, HttpResponse }
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{ Flow, Keep, MergeHub, Sink, Source }
+import akka.stream.scaladsl.{Flow, Keep, MergeHub, Sink, Source}
 import com.typesafe.scalalogging.StrictLogging
-import scala.concurrent.{ ExecutionContext, Future, Promise }
-import scala.util.{ Failure, Success, Try }
+
+import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.{Failure, Success, Try}
 
 class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSettings: ConnectionPoolSettings)(implicit val actorSystem: ActorSystem, val executionContext: ExecutionContext, val materializer: ActorMaterializer)
     extends AkkaHttpAmbryResponseHandler
@@ -18,7 +20,7 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
   private lazy val poolFlow: Flow[(HttpRequest, Promise[HttpResponse]), (Try[HttpResponse], Promise[HttpResponse]), Http.HostConnectionPool] =
     Http().cachedHostConnectionPool[Promise[HttpResponse]](host.split("http[s]?://").tail.head, port, connectionPoolSettings)
 
-  private val ServerSink =
+  private val ServerSink: Sink[(HttpRequest, Promise[HttpResponse]), (Http.HostConnectionPool, Future[Done])] =
     poolFlow.async
       .toMat(Sink.foreach({
         case ((Success(resp), p)) => p.success(resp)
