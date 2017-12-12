@@ -22,7 +22,8 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
     MergeHub.source[(HttpRequest, Promise[HttpResponse])](perProducerBufferSize = 16)
 
   private val ServerSink =
-    poolFlow.toMat(Sink.foreach({
+    poolFlow.async
+      .toMat(Sink.foreach({
       case ((Success(resp), p)) => p.success(resp)
       case ((Failure(e), p))    => p.failure(e)
     }))(Keep.both)
