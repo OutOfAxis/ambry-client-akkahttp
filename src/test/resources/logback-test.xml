@@ -5,6 +5,15 @@
             <pattern>[%highlight(%-5level)] %cyan(%logger{5}): %msg %n</pattern>
         </encoder>
     </appender>
+
+    <logger name="akka" level="DEBUG"/>
+    <logger name="akka.stream.scaladsl.RestartWithBackoffSource" level="DEBUG"/>
+    <logger name="akka.event.slf4j" level="DEBUG"/>
+    <logger name="akka.http.impl" level="DEBUG"/>
+    <logger name="akka.actor.RepointableActorRef:" level="DEBUG"/>
+    <logger name="akka.io" level="DEBUG"/>
+    <logger name="akka.stream.impl" level="DEBUG"/>
+    <logger name="io.pixelart.ambry" level="DEBUG"/>
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>

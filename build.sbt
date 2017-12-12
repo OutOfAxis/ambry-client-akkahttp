@@ -4,7 +4,7 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "0.1.8-SNAPSHOT"
+version := "0.1.9-SNAPSHOT"
 
 organization := "io.outofaxis"
 
@@ -15,7 +15,6 @@ val scalaTestVersion = "3.0.1"
 val akkaVersion = "2.5.8"
 
 val akka_http_Version = "10.0.11"
-
 
 
 libraryDependencies ++= Seq(
@@ -35,11 +34,9 @@ libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
   "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
-
 )
 
 resolvers += "Artima Maven Repository" at "http://repo.artima.com/releases"
-
 
 scalacOptions ++= Seq(
   "-unchecked",

@@ -1,17 +1,14 @@
 package io.pixelart.ambry.client.infrastructure.adapter.akkahttp.futures
 
-import akka.NotUsed
-import akka.http.scaladsl.model.{ HttpResponse, MediaTypes }
-import akka.http.scaladsl.server.ContentNegotiator.Alternative.{ ContentType, MediaType }
+import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.domain.model.httpModel._
 import io.pixelart.ambry.client.infrastructure.adapter.AmbryClient
 import io.pixelart.ambry.client.infrastructure.adapter.akkahttp.{ AkkaHttpAmbryRequests, RequestsPoolExecutor }
-
-import scala.concurrent.Future
 import io.pixelart.ambry.client.infrastructure.translator.AmbryResponseUnmarshallers._
+import scala.concurrent.Future
 
 /**
  * Created by rabzu on 11/12/2016.
@@ -43,7 +40,7 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
   }
   //all sizes are in bytes
   private[client] override def getBlobRequestStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[AmbryGetBlobResponse] = {
-    logger.info("getting streamed file {}", ambryId.value)
+    logger.debug("ambry/getBlobRequestStreamed/ambryId={}/chunkSize={}/", ambryId.value, chunkSize.toString)
     getBlobInfoRequest(ambryId).map { info =>
       require(chunkSize > 0, "Chunk size cannot be negative")
       val s = (info.blobSize.toFloat / chunkSize.toFloat).ceil
@@ -60,7 +57,6 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
       }
       AmbryGetBlobResponse(mergedBlobSource, info.blobSize, info.contentType)
     }
-
   }
 
   private[client] override def getBlobInfoRequest(ambryId: AmbryId): Future[AmbryBlobInfoResponse] = {
@@ -74,5 +70,4 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
     val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[Boolean]
     client.executeRequest(httpReq, unmarshalFunc)
   }
-
 }

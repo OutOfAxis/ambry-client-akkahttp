@@ -5,11 +5,13 @@ import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
-import io.pixelart.ambry.client.domain.model.{AmbryHttpBadRequestException, AmbryHttpFileNotFoundException}
 import io.pixelart.ambry.client.domain.model.httpModel._
+import io.pixelart.ambry.client.domain.model.{AmbryHttpBadRequestException, AmbryHttpFileNotFoundException}
 import io.pixelart.ambry.client.model.test.MockData._
+import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -44,20 +46,32 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
     "4.should get file " in {
-      val request = client.getFile(ambryId.get)
+      def request = for {
+        resp <- client.getFile(ambryId.get)
+        bs <-resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
+      } yield bs
+
       whenReady(request, timeout(10 seconds)) { r =>
-        logger.info(r.blobSize.toString)
+        r.length shouldEqual testFileSize
       }
     }
 
     "5.should get stream file " in {
-      val bsF = for {
+      def bsF = for {
         resp <- client.getBlobRequestStreamed(ambryId.get)
+//        bs <-resp.blob.runWith(Sink.ignore)
         bs <-resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
-      } yield bs
+      } yield {
+        logger.info(DateTime.now.toString())
+        bs
+      }
 
-      whenReady(bsF, timeout(20 seconds)) {  bs =>
-           bs.size shouldEqual testFileSize
+      val F = Future.traverse((List.fill(1)(Unit)))(x=>bsF)
+
+      whenReady(F, timeout(260 seconds)) {  bs =>
+//           bs.size shouldEqual testFileSize
+        bs.length shouldEqual 1
+        bs.head.length shouldEqual testFileSize
       }
     }
 
