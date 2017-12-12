@@ -18,15 +18,12 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
   private lazy val poolFlow: Flow[(HttpRequest, Promise[HttpResponse]), (Try[HttpResponse], Promise[HttpResponse]), Http.HostConnectionPool] =
     Http().cachedHostConnectionPool[Promise[HttpResponse]](host.split("http[s]?://").tail.head, port, connectionPoolSettings)
 
-  private val hub =
-    MergeHub.source[(HttpRequest, Promise[HttpResponse])](perProducerBufferSize = 16)
-
   private val ServerSink =
     poolFlow.async
       .toMat(Sink.foreach({
-      case ((Success(resp), p)) => p.success(resp)
-      case ((Failure(e), p))    => p.failure(e)
-    }))(Keep.both)
+        case ((Success(resp), p)) => p.success(resp)
+        case ((Failure(e), p))    => p.failure(e)
+      }))(Keep.both)
 
   // Attach a MergeHub Source to the consumer. This will materialize to a corresponding Sink.
   private val runnableGraph =
