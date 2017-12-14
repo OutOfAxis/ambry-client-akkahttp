@@ -45,6 +45,11 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
         r.serviceId.value shouldEqual "ServiceId"
       }
     }
+
+    /**
+      * make sure you are draining the bytes, eitherwise akka-http will block the connection
+      * and tests below will be successfull
+      */
     "4.should get file " in {
       def request = for {
         resp <- client.getFile(ambryId.get)
@@ -58,7 +63,7 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
 
     "5.should get stream file " in {
       def bsF = for {
-        resp <- client.getBlobRequestStreamed(ambryId.get)
+        resp <- client.getBlobRequestStreamed(ambryId.get,1000000)
 //        bs <-resp.blob.runWith(Sink.ignore)
         bs <-resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
       } yield {
