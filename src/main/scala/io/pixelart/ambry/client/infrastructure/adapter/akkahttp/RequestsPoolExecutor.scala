@@ -32,13 +32,11 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
     MergeHub.source[(HttpRequest, Promise[HttpResponse])](perProducerBufferSize = 16).toMat(ServerSink)(Keep.both)
 
   val (toConsumer, (conPool, _)) = runnableGraph.run()
-
   logger.info("ambry/connectionPool/setting={}/host={}/port={}", conPool.setup.toString)
 
   protected[akkahttp] def executeRequest[T](httpRequest: HttpRequest, unmarshal: HttpResponse => Future[T]): Future[T] = {
     val responsePromise = Promise[HttpResponse]()
-    Source.single((httpRequest -> responsePromise))
-      .runWith(toConsumer)
-    responsePromise.future.flatMap(handleHttpResponse(_, unmarshal))
+    val p = Source.single((httpRequest -> responsePromise)).mapMaterializedValue(_ => responsePromise).toMat(toConsumer)(Keep.left).run()
+    p.future.flatMap(handleHttpResponse(_, unmarshal))
   }
 }
