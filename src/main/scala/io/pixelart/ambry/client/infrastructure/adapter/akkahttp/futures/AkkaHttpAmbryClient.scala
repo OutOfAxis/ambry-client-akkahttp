@@ -52,8 +52,8 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
       })
       val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
 
-      val mergedBlobSource = source.mapAsync(5){request =>
-        logger.info("ambry/HttpRequest={}:",request.toString())
+      val mergedBlobSource = source.mapAsync(1) { request =>
+        logger.info("ambry/HttpRequest={}:", request.toString())
         client.executeRequest(request, unmarshalFunc)
       }.flatMapConcat { response =>
         response.blob
