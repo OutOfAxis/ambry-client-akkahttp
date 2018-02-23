@@ -72,7 +72,13 @@ object MockData {
   val testFileSize = Files.size(testFileLocalPath)
   val source = FileIO.fromPath(testFileLocalPath)
 
+  val testFileVideoLocalPath = Paths.get(getClass.getResource("/media/test_video.mp4").getPath)
+  val testFileVideoSize = Files.size(testFileVideoLocalPath)
+  val sourceVideo = FileIO.fromPath(testFileVideoLocalPath)
+
+
   val uploadData = UploadBlobRequestData(source, testFileSize, serviceId, MediaTypes.`image/jpeg`, ownerId = ownerId)
+  val uploadDataVideo = UploadBlobRequestData(sourceVideo, testFileVideoSize, serviceId, MediaTypes.`video/mp4`, ownerId = ownerId)
 
   /**RawHeaders*/
 

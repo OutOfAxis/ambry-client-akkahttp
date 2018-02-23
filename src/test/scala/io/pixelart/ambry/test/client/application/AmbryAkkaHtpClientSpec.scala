@@ -20,13 +20,13 @@ import scala.language.postfixOps
   */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
-  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge",connectionPoolSettings = ConnectionPoolSettings(system))
+  //  val client = new AmbryAkkaHttpClient("http://pixelart.ge",connectionPoolSettings = ConnectionPoolSettings(system).withMaxConnections(100))
+  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system).withMaxOpenRequests(1))
   var ambryId: Option[AmbryId] = None
 
   "Ambry service" should {
     "1. return  HealthCheck Good from real Ambry server" in {
       val healthCheckFuture = client.healthCheck
-
       whenReady(healthCheckFuture, timeout(10 seconds)) { r =>
         r shouldEqual AmbryHealthStatusResponse("GOOD")
       }
@@ -39,16 +39,18 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
         logger.info(r.ambryId.value)
       }
     }
+
     "3. should get file prop" in {
       val request = client.getFileProperty(ambryId.get)
       whenReady(request, timeout(10 seconds)) { r =>
         r.serviceId.value shouldEqual "ServiceId"
       }
     }
+
     "4.should get file " in {
       def request = for {
         resp <- client.getFile(ambryId.get)
-        bs <-resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
+        bs <- resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
       } yield bs
 
       whenReady(request, timeout(10 seconds)) { r =>
@@ -56,50 +58,48 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
 
-    "5.should get stream file " in {
-      def bsF = for {
-        resp <- client.getBlobRequestStreamed(ambryId.get)
-//        bs <-resp.blob.runWith(Sink.ignore)
-        bs <-resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
+    "5.should test concurrent GET request" in {
+      val request = client.postFile(uploadDataVideo)
+      def bsF(id: AmbryId) = for {
+        resp <- client.getBlobRequestStreamed(id)
+        bs <- resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
       } yield {
         logger.info(DateTime.now.toString())
         bs
       }
 
-      val F = Future.traverse((List.fill(1)(Unit)))(x=>bsF)
+      val numberOfRequests = 3
 
-      whenReady(F, timeout(260 seconds)) {  bs =>
-//           bs.size shouldEqual testFileSize
-        bs.length shouldEqual 1
-        bs.head.length shouldEqual testFileSize
+      def T(id: AmbryId) = Future.traverse((List.fill(numberOfRequests)(Unit)))(_ => bsF(id))
+
+      val F = request.flatMap(r => T(r.ambryId))
+
+
+      whenReady(F, timeout(2600 seconds)) { bs =>
+        bs.length shouldEqual numberOfRequests
+        bs.head.length shouldEqual testFileVideoSize
       }
     }
-
-
-
-    "6. delete fine in ambyr" in {
+    "6. delete fine in ambry" in {
       val request = client.deleteFile(ambryId.get)
       whenReady(request, timeout(10 seconds)) { r =>
         r shouldEqual true
       }
     }
 
-      "7. get non existant file " in {
-        val request = client.getFile(ambryId.get)
-        whenReady(request.failed, timeout(10 seconds)) {
-          case e:AmbryHttpFileNotFoundException =>
-            true shouldEqual true
-
-        }
+    "7. get non existant file " in {
+      val request = client.getFile(ambryId.get)
+      whenReady(request.failed, timeout(10 seconds)) {
+        case e: AmbryHttpFileNotFoundException =>
+          true shouldEqual true
+      }
     }
-
 
     "8. get non existant file " in {
       val request = client.getFile(AmbryId("fake_Id"))
       whenReady(request.failed, timeout(10 seconds)) {
-        case e:AmbryHttpBadRequestException =>
+        case e: AmbryHttpBadRequestException =>
           true shouldEqual true
-
       }
     }
   }
