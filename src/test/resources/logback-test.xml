@@ -9,7 +9,7 @@
     <logger name="akka" level="DEBUG"/>
     <logger name="akka.stream.scaladsl.RestartWithBackoffSource" level="DEBUG"/>
     <logger name="akka.event.slf4j" level="DEBUG"/>
-    <logger name="akka.http.impl" level="DEBUG"/>
+    <logger name="akka.http.impl" level="TRACE"/>
     <logger name="akka.actor.RepointableActorRef:" level="DEBUG"/>
     <logger name="akka.io" level="DEBUG"/>
     <logger name="akka.stream.impl" level="DEBUG"/>

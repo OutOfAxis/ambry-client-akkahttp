@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
  * Created by rabzu on 17/12/2016.
  */
 //todo replace it with akka Uri model
-class AmbryAkkaHttpClient(host: String, port: Int = 1174, connectionPoolSettings: ConnectionPoolSettings, clientQueuePoolSize: Int = 1000)(implicit val actorSystem: ActorSystem, val executionContext: ExecutionContext, val materializer: ActorMaterializer)
+class AmbryAkkaHttpClient(host: String, port: Int = 1174, connectionPoolSettings: ConnectionPoolSettings)(implicit val actorSystem: ActorSystem, val executionContext: ExecutionContext, val materializer: ActorMaterializer)
     extends AkkaHttpAmbryClient
     with AkkaHttpAmbryRequests
     with AmbryService {

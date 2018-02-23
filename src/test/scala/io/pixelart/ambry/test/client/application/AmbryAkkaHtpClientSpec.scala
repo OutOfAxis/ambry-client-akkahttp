@@ -21,6 +21,7 @@ import scala.language.postfixOps
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
   //  val client = new AmbryAkkaHttpClient("http://pixelart.ge",connectionPoolSettings = ConnectionPoolSettings(system).withMaxConnections(100))
+  //  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system))
   val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system).withMaxOpenRequests(1))
   var ambryId: Option[AmbryId] = None
 
@@ -47,6 +48,11 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
 
+
+    /**
+      * make sure you are draining the bytes, eitherwise akka-http will block the connection
+      * and tests below will not be successfull
+      */
     "4.should get file " in {
       def request = for {
         resp <- client.getFile(ambryId.get)
@@ -58,10 +64,22 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
 
+    /**
+      * When chunk size is large 10.1.0-RC2 throws
+      *
+      * The future returned an exception of type: java.lang.IllegalStateException, with message: Substream Source cannot be materialized more than once.
+      *
+      * and logs
+      *
+      * Response entity was not subscribed after 1 second. Make sure to read the response entity body or call `discardBytes()` on it
+      *
+      *  because it cannot consume data in time in my opinion
+      */
     "5.should test concurrent GET request" in {
       val request = client.postFile(uploadDataVideo)
+
       def bsF(id: AmbryId) = for {
-        resp <- client.getBlobRequestStreamed(id)
+        resp <- client.getBlobRequestStreamed(id, 100000)
         bs <- resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
       } yield {
         logger.info(DateTime.now.toString())
@@ -72,14 +90,14 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
 
       def T(id: AmbryId) = Future.traverse((List.fill(numberOfRequests)(Unit)))(_ => bsF(id))
 
-      val F = request.flatMap(r => T(r.ambryId))
-
-
+      //      val F = request.flatMap(r => T(r.ambryId))
+      val F = T(AmbryId("AAIA____AAAAAQAAAAAAAAAAAAAAJDVhYTU0MTAzLWEwZmItNDNhYi1iYWY5LWZjYmVjZmM1YzI4MQ"))
       whenReady(F, timeout(2600 seconds)) { bs =>
         bs.length shouldEqual numberOfRequests
         bs.head.length shouldEqual testFileVideoSize
       }
     }
+
     "6. delete fine in ambry" in {
       val request = client.deleteFile(ambryId.get)
       whenReady(request, timeout(10 seconds)) { r =>
