@@ -18,7 +18,7 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
     extends AkkaHttpAmbryResponseHandler
     with StrictLogging {
 
-  //todo: Move everythign to Akka URI
+  //todo: Move everything to Akka URI
   private lazy val poolFlow: Flow[(HttpRequest, Promise[HttpResponse]), (Try[HttpResponse], Promise[HttpResponse]), Http.HostConnectionPool] =
     Http().cachedHostConnectionPool[Promise[HttpResponse]](host.split("http[s]?://").tail.head, port, connectionPoolSettings)
 

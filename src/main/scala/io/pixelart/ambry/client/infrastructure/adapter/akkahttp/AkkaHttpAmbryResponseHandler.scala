@@ -24,10 +24,10 @@ private[client] trait AkkaHttpAmbryResponseHandler extends StrictLogging {
         unmarshal(response)
       //      case response @ HttpResponse(StatusCodes.OK, _, _, _) =>
       //        unmarshal(response)
-      //          .recover {
-      //            case e =>
-      //              throw new AmbryHttpBadRequestException(e.getMessage)
-      //          }
+                .recover {
+                  case e =>
+                    throw new AmbryHttpBadRequestException(e.getMessage)
+                }
       case response @ HttpResponse(StatusCodes.Created, _, _, _) =>
         unmarshal(response).recover {
           case e => throw new AmbryHttpBadRequestException(e.getMessage)
