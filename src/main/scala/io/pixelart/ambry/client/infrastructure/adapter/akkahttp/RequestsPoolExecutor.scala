@@ -11,6 +11,8 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Keep, MergeHub, Sink, Source}
 import com.typesafe.scalalogging.StrictLogging
 
+import scala.language.postfixOps
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success, Try}
 
@@ -46,6 +48,6 @@ class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSetting
   protected[akkahttp] def executeRequest[T](httpRequest: HttpRequest, unmarshal: HttpResponse => Future[T]): Future[T] = {
     val responsePromise = Promise[HttpResponse]()
     val p = Source.single((httpRequest -> responsePromise)).mapMaterializedValue(_ => responsePromise).toMat(toConsumer)(Keep.left).run()
-    p.future.flatMap(handleHttpResponse(_, unmarshal))
+    p.future.flatMap(_.toStrict(5 minutes)).flatMap(handleHttpResponse(_, unmarshal))
   }
 }

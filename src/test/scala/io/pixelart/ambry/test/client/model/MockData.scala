@@ -1,10 +1,10 @@
 package io.pixelart.ambry.client.model.test
 
-import java.nio.file.{Files, Paths}
+import java.nio.file.{ Files, Paths }
 
-import akka.http.scaladsl.model.headers.{RawHeader, `Content-Type`}
-import akka.http.scaladsl.model.{ContentType, ContentTypes, MediaTypes}
-import akka.stream.scaladsl.{FileIO, Source}
+import akka.http.scaladsl.model.headers.{ RawHeader, `Content-Type` }
+import akka.http.scaladsl.model.{ ContentType, ContentTypes, MediaTypes }
+import akka.stream.scaladsl.{ FileIO, Source }
 import akka.util.ByteString
 import com.github.nscala_time.time.Imports._
 import com.typesafe.config.ConfigFactory
@@ -75,7 +75,6 @@ object MockData {
   val testFileVideoLocalPath = Paths.get(getClass.getResource("/media/test_video.mp4").getPath)
   val testFileVideoSize = Files.size(testFileVideoLocalPath)
   val sourceVideo = FileIO.fromPath(testFileVideoLocalPath)
-
 
   val uploadData = UploadBlobRequestData(source, testFileSize, serviceId, MediaTypes.`image/jpeg`, ownerId = ownerId)
   val uploadDataVideo = UploadBlobRequestData(sourceVideo, testFileVideoSize, serviceId, MediaTypes.`video/mp4`, ownerId = ownerId)
