@@ -6,7 +6,7 @@ import akka.util.ByteString
 import com.typesafe.scalalogging.StrictLogging
 import io.pixelart.ambry.client.application.AmbryAkkaHttpClient
 import io.pixelart.ambry.client.domain.model.httpModel._
-import io.pixelart.ambry.client.domain.model.{AmbryHttpBadRequestException, AmbryHttpFileNotFoundException}
+import io.pixelart.ambry.client.domain.model.{ AmbryHttpBadRequestException, AmbryHttpFileNotFoundException }
 import io.pixelart.ambry.client.model.test.MockData._
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
@@ -16,16 +16,16 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 /**
-  * Created by rabzu on 18/12/2016.
-  */
+ * Created by rabzu on 18/12/2016.
+ */
 class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures with StrictLogging {
 
-  //  val client = new AmbryAkkaHttpClient("http://pixelart.ge",connectionPoolSettings = ConnectionPoolSettings(system).withMaxConnections(100))
-  //  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system))
-  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system).withMaxOpenRequests(1))
+      val client = new AmbryAkkaHttpClient("http://b.pixelart.ge",connectionPoolSettings = ConnectionPoolSettings(system).withMaxConnections(1))
+//  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system))
+  //  val client = new AmbryAkkaHttpClient("http://b.pixelart.ge", connectionPoolSettings = ConnectionPoolSettings(system).withMaxOpenRequests(256))
   var ambryId: Option[AmbryId] = None
 
-  "Ambry service" should {
+  "Ambry service" should  {
     "1. return  HealthCheck Good from real Ambry server" in {
       val healthCheckFuture = client.healthCheck
       whenReady(healthCheckFuture, timeout(10 seconds)) { r =>
@@ -48,12 +48,11 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
 
-
     /**
-      * make sure you are draining the bytes, eitherwise akka-http will block the connection
-      * and tests below will not be successfull
-      */
-    "4.should get file " in {
+     * make sure you are draining the bytes, eitherwise akka-http will block the connection
+     * and tests below will not be successfull
+     */
+    "4.should get small file " in {
       def request = for {
         resp <- client.getFile(ambryId.get)
         bs <- resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
@@ -64,36 +63,50 @@ class AmbryAkkaHtpClientSpec extends AkkaSpec("ambry-client") with ScalaFutures 
       }
     }
 
+    //already uploaded to b.pixelart
+    val large_ambryId = AmbryId("AAIA____AAAAAQAAAAAAAAAAAAAAJDVhYTU0MTAzLWEwZmItNDNhYi1iYWY5LWZjYmVjZmM1YzI4MQ")
+
+    "5.1 should get large file " in {
+      def request = for {
+        resp <- client.getFile(large_ambryId)
+        bs <- resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
+      } yield bs
+
+      whenReady(request, timeout(100000 seconds)) { r =>
+        r.length shouldEqual testFileVideoSize
+      }
+    }
+
     /**
-      * When chunk size is large 10.1.0-RC2 throws
-      *
-      * The future returned an exception of type: java.lang.IllegalStateException, with message: Substream Source cannot be materialized more than once.
-      *
-      * and logs
-      *
-      * Response entity was not subscribed after 1 second. Make sure to read the response entity body or call `discardBytes()` on it
-      *
-      *  because it cannot consume data in time in my opinion
-      */
-    "5.should test concurrent GET request" in {
+     * When chunk size is large 10.1.0-RC2 throws
+     *
+     * The future returned an exception of type: java.lang.IllegalStateException, with message: Substream Source cannot be materialized more than once.
+     *
+     * and logs
+     *
+     * Response entity was not subscribed after 1 second. Make sure to read the response entity body or call `discardBytes()` on it
+     *
+     *  because it cannot consume data in time in my opinion
+     */
+    "5.2 should test concurrent GET requests" in {
       val request = client.postFile(uploadDataVideo)
 
       def bsF(id: AmbryId) = for {
-        resp <- client.getBlobRequestStreamed(id, 100000)
+        resp <- client.getBlobRequestStreamed(id, 1000000)
         bs <- resp.blob.runWith(Sink.fold(ByteString.empty)(_ ++ _))
       } yield {
         logger.info(DateTime.now.toString())
         bs
       }
 
-      val numberOfRequests = 3
+      val numberOfParallelRequests = 5
 
-      def T(id: AmbryId) = Future.traverse((List.fill(numberOfRequests)(Unit)))(_ => bsF(id))
+      def T(id: AmbryId) = Future.traverse((List.fill(numberOfParallelRequests)(Unit)))(_ => bsF(id))
 
       //      val F = request.flatMap(r => T(r.ambryId))
-      val F = T(AmbryId("AAIA____AAAAAQAAAAAAAAAAAAAAJDVhYTU0MTAzLWEwZmItNDNhYi1iYWY5LWZjYmVjZmM1YzI4MQ"))
+      val F = T(large_ambryId)
       whenReady(F, timeout(2600 seconds)) { bs =>
-        bs.length shouldEqual numberOfRequests
+        bs.length shouldEqual numberOfParallelRequests
         bs.head.length shouldEqual testFileVideoSize
       }
     }
