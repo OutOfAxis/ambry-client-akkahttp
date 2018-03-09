@@ -1,20 +1,20 @@
 package io.pixelart.ambry.client.infrastructure.adapter.akkahttp
 
-import java.io.{PrintWriter, StringWriter}
+import java.io.{ PrintWriter, StringWriter }
 
 import akka.Done
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.{ HttpRequest, HttpResponse }
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Flow, Keep, MergeHub, Sink, Source}
+import akka.stream.scaladsl.{ Flow, Keep, MergeHub, Sink, Source }
 import com.typesafe.scalalogging.StrictLogging
 
 import scala.language.postfixOps
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Promise}
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ ExecutionContext, Future, Promise }
+import scala.util.{ Failure, Success, Try }
 
 class RequestsPoolExecutor(host: String, port: Int = 1174, connectionPoolSettings: ConnectionPoolSettings)(implicit val actorSystem: ActorSystem, val executionContext: ExecutionContext, val materializer: ActorMaterializer)
     extends AkkaHttpAmbryResponseHandler
