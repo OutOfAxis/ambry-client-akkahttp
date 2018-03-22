@@ -50,18 +50,18 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
       val source = Source(ranges.map { tuple =>
         getBlobHttpRequestWithRange(ambryUri, ambryId, tuple._1, tuple._2)
       })
-//      val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
+      //      val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
 
-       client.executeRequestChunks(s,source).map{
+      client.executeRequestChunks(s, source).map {
         AmbryGetBlobResponse(_, info.blobSize, info.contentType)
       }
 
-//      val mergedBlobSource = source.mapAsync(1) { request =>
-//        logger.info("ambry/HttpRequest={}:", request.toString())
-//        client.executeRequestChunks(source, unmarshalFunc)
-//      }.flatMapConcat { response =>
-//        response.blob
-//      }
+      //      val mergedBlobSource = source.mapAsync(1) { request =>
+      //        logger.info("ambry/HttpRequest={}:", request.toString())
+      //        client.executeRequestChunks(source, unmarshalFunc)
+      //      }.flatMapConcat { response =>
+      //        response.blob
+      //      }
 
     }
   }
