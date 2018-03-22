@@ -41,24 +41,28 @@ private[client] trait AkkaHttpAmbryClient extends StrictLogging with AmbryClient
   //all sizes are in bytes
   private[client] override def getBlobRequestStreamed(ambryId: AmbryId, chunkSize: Long = 100000): Future[AmbryGetBlobResponse] = {
     logger.debug("ambry/getBlobRequestStreamed/ambryId={}/chunkSize={}/", ambryId.value, chunkSize.toString)
-    getBlobInfoRequest(ambryId).map { info =>
+    getBlobInfoRequest(ambryId).flatMap { info =>
       require(chunkSize > 0, "Chunk size cannot be negative")
-      val s = (info.blobSize.toFloat / chunkSize.toFloat).ceil
-      val l = List.tabulate[Option[Long]](s.toInt)(n => Some(n * chunkSize))
+      val s = (info.blobSize.toFloat / chunkSize.toFloat).ceil.toInt
+      val l = List.tabulate[Option[Long]](s)(n => Some(n * chunkSize))
       val r = l.drop(1).map(_.map(_ - 1)) ::: List(None)
       val ranges = l.zip(r)
       val source = Source(ranges.map { tuple =>
         getBlobHttpRequestWithRange(ambryUri, ambryId, tuple._1, tuple._2)
       })
-      val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
+//      val unmarshalFunc = (r: HttpResponse) => Unmarshal(r).to[AmbryGetBlobResponse]
 
-      val mergedBlobSource = source.mapAsync(1) { request =>
-        logger.info("ambry/HttpRequest={}:", request.toString())
-        client.executeRequest(request, unmarshalFunc)
-      }.flatMapConcat { response =>
-        response.blob
+       client.executeRequestChunks(s,source).map{
+        AmbryGetBlobResponse(_, info.blobSize, info.contentType)
       }
-      AmbryGetBlobResponse(mergedBlobSource, info.blobSize, info.contentType)
+
+//      val mergedBlobSource = source.mapAsync(1) { request =>
+//        logger.info("ambry/HttpRequest={}:", request.toString())
+//        client.executeRequestChunks(source, unmarshalFunc)
+//      }.flatMapConcat { response =>
+//        response.blob
+//      }
+
     }
   }
 
