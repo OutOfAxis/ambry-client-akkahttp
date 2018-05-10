@@ -4,11 +4,12 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "0.1.22-RC1-SNAPSHOT"
+version := "0.1.22-SNAPSHOT"
 
 organization := "io.outofaxis"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.12.6"
+//scalaVersion := "2.11.11"
 
 val scalaTestVersion = "3.0.1"
 
@@ -25,14 +26,14 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % akka_http_Version,
   "com.typesafe.akka" %% "akka-http-testkit" % akka_http_Version,
   "org.mockito" % "mockito-all" % "1.10.19",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
   "org.slf4j" % "log4j-over-slf4j" % "1.7.12",
-  "ch.qos.logback" % "logback-classic" % "1.1.7",
-  "ch.qos.logback" % "logback-core" % "1.1.7",
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "ch.qos.logback" % "logback-core" % "1.2.3",
   "com.github.nscala-time" %% "nscala-time" % "2.14.0",
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-  "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
+  "org.scalacheck" %% "scalacheck" % "1.14.0" % "test"
 )
 
 resolvers += "Artima Maven Repository" at "http://repo.artima.com/releases"
@@ -41,7 +42,7 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-deprecation",
   "-feature",
-  "-Ydead-code",
+//  "-Ydead-code",
   "-Ywarn-numeric-widen",
   "-Xfatal-warnings",
   "-encoding",
