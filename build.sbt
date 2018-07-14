@@ -4,7 +4,7 @@ import scalariform.formatter.preferences.{DoubleIndentClassDeclaration, AlignSin
 
 name := """ambry-client-akkahttp"""
 
-version := "0.1.25-SNAPSHOT"
+version := "0.1.26-SNAPSHOT"
 
 organization := "io.outofaxis"
 
@@ -13,7 +13,7 @@ scalaVersion := "2.11.11"
 
 val scalaTestVersion = "3.0.1"
 
-val akkaVersion = "2.5.13"
+val akkaVersion = "2.5.14"
 
 val akka_http_Version = "10.1.3"
 
